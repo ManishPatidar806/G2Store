@@ -10,7 +10,7 @@
 
 **A modern, scalable e-commerce platform for gaming products built with microservices architecture**
 
-[🎥 Video Demo](#-video-demo) • [✨ Features](#-features) • [🏗️ Architecture](#️-architecture) • [🚀 Getting Started](#-getting-started) • [📚 Documentation](#-documentation)
+[🎥 Video Demo](https://youtu.be/88sd2PwhvEA) • [✨ Features](#-features) • [🏗️ Architecture](#️-architecture) • [🚀 Getting Started](#-getting-started) • [📚 Documentation](#-documentation)
 
 </div>
 
@@ -29,18 +29,15 @@
 - [Installation & Setup](#-installation--setup)
 - [Configuration](#️-configuration)
 - [Running the Application](#-running-the-application)
-- [API Documentation](#-api-documentation)
 - [Deployment](#-deployment)
 - [Project Structure](#-project-structure)
 - [Contributing](#-contributing)
 - [License](#-license)
-- [Contact](#-contact)
-
 ---
 
 ## 🌟 Overview
 
-**Gaming Zone** is a full-stack, enterprise-grade e-commerce platform specifically designed for gaming products. Built using modern microservices architecture, it provides a scalable, maintainable, and robust solution for online gaming merchandise sales.
+**G2Store** is a full-stack, enterprise-grade e-commerce platform specifically designed for gaming products. Built using modern microservices architecture, it provides a scalable, maintainable, and robust solution for online gaming merchandise sales.
 
 The platform enables users to:
 - Browse and purchase gaming products
@@ -55,20 +52,12 @@ The platform enables users to:
 
 ## 🎥 Video Demo
 
-> 📹 **[Watch Full Demo Video](YOUR_VIDEO_LINK_HERE)** - See Gaming Zone in action!
+> 📹 **[Watch Full Demo Video](https://youtu.be/88sd2PwhvEA)** - See G2Store in action!
 
 <!-- Replace with your actual demo video link -->
 <!-- You can use YouTube, Vimeo, or upload to GitHub releases -->
 
-### Quick Preview
 
-```
-🔗 Live Demo: [Add your deployed frontend URL]
-🖥️ Admin Dashboard: [Add your admin dashboard URL]
-📊 Service Monitor: [Add your admin server URL]
-```
-
----
 
 ## ✨ Features
 
@@ -369,10 +358,10 @@ Before you begin, ensure you have the following installed:
 
 ```bash
 # Clone the main repository
-git clone https://github.com/ManishPatidar806/GameingZone_MicroService.git
+git clone https://github.com/ManishPatidar806/G2Store.git
 
 # Navigate to project directory
-cd GameingZone_MicroService
+cd Backend
 ```
 
 ### Step 2: Database Setup
@@ -648,13 +637,6 @@ npm run dev
 
 ---
 
-## 📖 API Documentation
-
-### Base URL
-```
-http://localhost:8080
-```
-
 ### Authentication Endpoints
 
 #### Register User
@@ -828,7 +810,7 @@ docker run -p 8081:8081 auth-service
 ## 📁 Project Structure
 
 ```
-GameingZone_MicroService/
+G2Store/
 │
 ├── Backend/
 │   ├── ServiceRegistry/              # Eureka Server
@@ -981,55 +963,13 @@ of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction...
 ```
 
----
-
-## 👨‍💻 Contact
-
-**Manish Patidar**
-
-- 📧 Email: [your.email@example.com](mailto:your.email@example.com)
-- 🐙 GitHub: [@ManishPatidar806](https://github.com/ManishPatidar806)
-- 💼 LinkedIn: [Add your LinkedIn profile]
-- 🌐 Portfolio: [Add your portfolio website]
-
----
-
-## 🙏 Acknowledgments
-
-- Spring Framework Team
-- Netflix OSS Team
-- React Community
-- Stripe Team
-- Cloudinary Team
-- All open-source contributors
-
----
-
 ## 📊 Project Statistics
 
 ```
 Total Microservices: 9
 Lines of Code: ~20,000+
 Technologies Used: 15+
-Development Time: [Add your timeline]
 ```
-
----
-
-## 🗺️ Roadmap
-
-- [ ] Add GraphQL API support
-- [ ] Implement Redis caching
-- [ ] Add Kafka for event streaming
-- [ ] Implement OAuth2 social login
-- [ ] Add real-time notifications with WebSocket
-- [ ] Implement recommendation engine
-- [ ] Add multi-language support
-- [ ] Mobile app development (React Native)
-- [ ] Enhanced analytics dashboard
-- [ ] AI-powered product recommendations
-
----
 
 <div align="center">
 
