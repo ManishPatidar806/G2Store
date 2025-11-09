@@ -3,6 +3,8 @@ import axios from "axios";
 import Alert from "../AlertAndHelper/Alert";
 import { useNavigate } from "react-router-dom";
 import Loader from "../AlertAndHelper/Loader";
+import Navbar from "../HeaderAndFooter/Navbar";
+import Footer from "../HeaderAndFooter/Footer";
 
 const ProductForm = () => {
   const navigate = useNavigate();
@@ -55,37 +57,34 @@ const ProductForm = () => {
 
   const renderTextFields = (fields) => {
     return fields.map(({ id, type, label }) => (
-      <div className="relative z-0 w-full mb-5 group" key={id}>
+      <div className="mb-4" key={id}>
+        <label htmlFor={id} className="block text-sm font-medium text-white mb-2">
+          {label}
+        </label>
         <input
           type={type}
           id={id}
           name={id}
           onChange={handleChange}
-          className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-moz-number-spin-box]:appearance-none"
-                  
-          placeholder=" "
+          className="w-full px-4 py-3 bg-gaming-dark border border-gray-700 rounded-lg text-white 
+                   focus:border-gaming-accent focus:ring-1 focus:ring-gaming-accent outline-none transition-all"
           required
         />
-        <label
-          htmlFor={id}
-          className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-        >
-          {label}
-        </label>
       </div>
     ));
   };
 
   const renderDropdown = (id, label, options) => (
-    <div className="relative z-0 w-full mb-5 group" key={id}>
-      <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+    <div className="mb-4" key={id}>
+      <label htmlFor={id} className="block text-sm font-medium text-white mb-2">
         {label}
       </label>
       <select
         id={id}
         name={id}
         onChange={handleChange}
-        className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 dark:bg-gray-700 dark:text-white dark:border-gray-600 focus:ring-blue-500 focus:border-blue-500 p-2.5"
+        className="w-full px-4 py-3 bg-gaming-dark border border-gray-700 rounded-lg text-white 
+                 focus:border-gaming-accent focus:ring-1 focus:ring-gaming-accent outline-none transition-all"
         required
       >
         <option value="">Select {label}</option>
@@ -103,7 +102,9 @@ const ProductForm = () => {
   }
 
   return (
-    <>
+    <div className="min-h-screen bg-gaming-darker flex flex-col">
+      <Navbar />
+      
       {errorFlag && errorMessage && (
         <Alert
           type={success ? "success" : "danger"}
@@ -113,121 +114,109 @@ const ProductForm = () => {
         />
       )}
 
-      <form className="max-w-lg mx-auto my-[2%]  " onSubmit={handleSubmit}>
-        <h2 className="text-blue-500 text-center text-2xl m-10">
-          GAME UPLOAD FORM
-        </h2>
-        {renderTextFields([
-          { id: "name", type: "text", label: "Name of Game" },
-          { id: "company", type: "text", label: "Company Name" },
-          { id: "largePrice", type: "number", label: "Price" },
-          { id: "price", type: "number", label: "Original price" },
-        ])}
+      <div className="flex-1 pt-24 pb-16 px-4">
+        <div className="max-w-3xl mx-auto">
+          <h1 className="text-3xl font-bold gradient-text text-center mb-8">Add New Game</h1>
 
-        {renderDropdown("typeOfProduct", "Product Category", [
-          "Action",
-          "Adventure",
-          "Racing",
-          "Sports",
-          "Simulation",
-          "Survival",
-          "Horror",
-          "Superhero",
-          "Puzzle",
-          "Strategy",
-          "Card and Casino",
-          "Board",
-          "Fighting",
-          "MOBA",
-        ])}
+          <form onSubmit={handleSubmit} className="bg-gaming-dark/50 backdrop-blur-sm border border-gray-700/50 rounded-xl p-6 space-y-6">
+            {/* Basic Info */}
+            <div className="grid md:grid-cols-2 gap-4">
+              {renderTextFields([
+                { id: "name", type: "text", label: "Game Name" },
+                { id: "company", type: "text", label: "Company" },
+                { id: "largePrice", type: "number", label: "Original Price" },
+                { id: "price", type: "number", label: "Sale Price" },
+              ])}
+            </div>
 
-        <div>
-          <textarea
-            id="message"
-            rows="4"
-            name="description"
-            onChange={handleChange}
-            className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-transparent dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-            placeholder="Description of Game"
-          ></textarea>
-        </div>
+            {renderDropdown("typeOfProduct", "Category", [
+              "Action", "Adventure", "Racing", "Sports", "Simulation", "Survival",
+              "Horror", "Superhero", "Puzzle", "Strategy", "Card and Casino",
+              "Board", "Fighting", "MOBA",
+            ])}
 
-        <h2 className="text-blue-500 text-center text-xl m-4">Image Section</h2>
-        <div className="grid grid-cols-2 gap-x-5">
-          {["mainImage", "image1", "image2", "image3", "image4", "image5"].map(
-            (id) => (
-              <div className="relative z-0  w-full mb-5 group" key={id}>
-                <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                  Upload {id.replace("image", "Image ")}
-                </label>
-                <input
-                  className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
-                  id={id}
-                  name={id}
-                  onChange={handleChange}
-                  type="file"
-                />
+            <div>
+              <label className="block text-sm font-medium text-white mb-2">Description</label>
+              <textarea
+                rows="4"
+                name="description"
+                onChange={handleChange}
+                className="w-full px-4 py-3 bg-gaming-dark border border-gray-700 rounded-lg text-white 
+                         focus:border-gaming-accent focus:ring-1 focus:ring-gaming-accent outline-none transition-all resize-none"
+                placeholder="Game description..."
+                required
+              ></textarea>
+            </div>
+
+            {/* Images */}
+            <div>
+              <h3 className="text-lg font-semibold text-white mb-3">Images</h3>
+              <div className="grid sm:grid-cols-2 gap-4">
+                {["mainImage", "image1", "image2", "image3", "image4", "image5"].map((id) => (
+                  <div key={id}>
+                    <label className="block text-sm text-gray-400 mb-2">
+                      {id === "mainImage" ? "Main Image" : id.replace("image", "Image ")}
+                    </label>
+                    <input
+                      type="file"
+                      id={id}
+                      name={id}
+                      onChange={handleChange}
+                      className="w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-lg 
+                               file:border-0 file:text-sm file:font-semibold file:bg-gaming-accent 
+                               file:text-white hover:file:bg-gaming-accent/80 file:cursor-pointer"
+                      accept="image/*"
+                    />
+                  </div>
+                ))}
               </div>
-            )
-          )}
+            </div>
+
+            {/* System Requirements */}
+            <div>
+              <h3 className="text-lg font-semibold text-white mb-3">System Requirements</h3>
+              <div className="grid sm:grid-cols-2 gap-4">
+                {renderDropdown("processer", "Processor", [
+                  "Intel i3 11500H", "Intel i5 12450H", "Intel i7 13250H", "Intel i9 14900HX",
+                  "AMD Ryzen 3 7000Hx", "AMD Ryzen 5 4000HS", "AMD Ryzen 7 8000HS", "AMD Ryzen 9 9000HS",
+                ])}
+
+                {renderDropdown("graphicCard", "Graphics Card", [
+                  "NVIDIA GTX 1050", "NVIDIA GTX 1650", "NVIDIA RTX 2060",
+                  "NVIDIA RTX 3060", "NVIDIA RTX 4090", "AMD Radeon RX 570", "AMD Radeon RX 6700",
+                ])}
+
+                {renderDropdown("ram", "RAM", ["4GB", "8GB", "16GB", "32GB", "64GB"])}
+
+                {renderDropdown("memory", "Storage", [
+                  "20GB SSD", "40GB SSD", "60GB SSD", "80GB SSD", "100GB SSD",
+                  "120GB SSD", "140GB SSD", "200GB SSD",
+                ])}
+              </div>
+            </div>
+
+            {/* Buttons */}
+            <div className="flex gap-3 justify-end pt-4">
+              <button
+                onClick={() => navigate(-1)}
+                type="button"
+                className="px-6 py-2.5 bg-gray-700 hover:bg-gray-600 text-white rounded-lg transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="px-6 py-2.5 bg-gaming-accent hover:bg-gaming-accent/80 text-white rounded-lg transition-colors"
+              >
+                Add Game
+              </button>
+            </div>
+          </form>
         </div>
-        <h2 className="text-blue-500 text-center text-xl m-4">
-          System Requirements
-        </h2>
+      </div>
 
-        <div className="grid grid-cols-2 gap-x-5">
-          {renderDropdown("processer", "Processer", [
-            "Intel i3 11500H ",
-            "Intel i5  12450H",
-            "Intel i7 13250H",
-            "Intel i9 14900HX",
-            "AMD Ryzen 3 7000Hx",
-            "AMD Ryzen 5  4000HS",
-            "AMD Ryzen 7 8000HS",
-            "AMD Ryzen 9 9000HS",
-          ])}
-
-          {renderDropdown("graphicCard", "Graphic Card", [
-            "NVIDIA GTX 1050",
-            "NVIDIA GTX 1650",
-            "NVIDIA RTX 2060",
-            "NVIDIA RTX 3060",
-            "NVIDIA RTX 4090",
-            "AMD Radeon RX 570",
-            "AMD Radeon RX 6700",
-          ])}
-
-          {renderDropdown("ram", "RAM", ["4GB", "8GB", "16GB", "32GB", "64GB"])}
-
-          {renderDropdown("memory", "Memory (Storage)", [
-            "20GB SSD",
-            "40GB SSD",
-            "60GB SSD",
-            "80GB SSD",
-            "100GB SSD",
-            "120GB SSD",
-            "140GB SSD",
-            "200GB SSD",
-          ])}
-        </div>
-        <div className="flex gap-1 w-full items-center justify-center">
-          <button
-            type="submit"
-            className="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
-          >
-            Submit
-          </button>
-
-          <button
-            onClick={() => navigate(-1)}
-            type="button"
-            className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
-          >
-            Cancel
-          </button>
-        </div>
-      </form>
-    </>
+      <Footer />
+    </div>
   );
 };
 

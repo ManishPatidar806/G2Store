@@ -1,13 +1,128 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-::-webkit-scrollbar {
-    display: none;
+@layer base {
+  body {
+    @apply bg-gaming-darker text-gray-100 font-sans antialiased;
   }
   
-  /* Hide scrollbar for IE, Edge and Firefox */
-  * {
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display;
   }
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-gradient-to-r from-gaming-accent to-gaming-purple text-white font-semibold py-3 px-6 rounded-lg 
+           shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-300 
+           hover:from-gaming-accent-light hover:to-purple-500 focus:ring-4 focus:ring-gaming-accent/50;
+  }
+  
+  .btn-secondary {
+    @apply bg-gray-800 text-white font-semibold py-3 px-6 rounded-lg border border-gray-700
+           hover:bg-gray-700 hover:border-gray-600 transform hover:-translate-y-0.5 transition-all duration-300
+           shadow-md hover:shadow-lg focus:ring-4 focus:ring-gray-700/50;
+  }
+  
+  .card {
+    @apply bg-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-xl shadow-xl 
+           hover:shadow-2xl transition-all duration-300 hover:border-gaming-accent/50;
+  }
+  
+  .input-field {
+    @apply bg-gray-800/50 border border-gray-700 text-gray-100 rounded-lg 
+           focus:ring-2 focus:ring-gaming-accent focus:border-gaming-accent 
+           transition-all duration-200 placeholder-gray-500;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1a1a2e;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #6366f1, #8b5cf6);
+  border-radius: 10px;
+  border: 2px solid #1a1a2e;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #818cf8, #a78bfa);
+}
+
+/* Firefox scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #6366f1 #1a1a2e;
+}
+
+/* Smooth scroll */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Selection color */
+::selection {
+  background-color: rgba(99, 102, 241, 0.3);
+  color: #ffffff;
+}
+
+/* Gradient text utility */
+.gradient-text {
+  @apply bg-gradient-to-r from-gaming-accent via-gaming-purple to-gaming-pink bg-clip-text text-transparent;
+}
+
+/* Glow effect */
+.glow-effect {
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.5);
+}
+
+/* Card hover glow */
+.card-glow:hover {
+  box-shadow: 0 0 30px rgba(99, 102, 241, 0.3), 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+/* Loading animation */
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.shimmer {
+  animation: shimmer 2s infinite;
+  background: linear-gradient(to right, #1a1a2e 4%, #2a2a4e 25%, #1a1a2e 36%);
+  background-size: 1000px 100%;
+}
+
+/* Glassmorphism effect */
+.glass-effect {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Remove number input arrows */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}

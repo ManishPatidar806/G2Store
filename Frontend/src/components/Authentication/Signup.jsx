@@ -5,12 +5,13 @@ import Loader from "../AlertAndHelper/Loader";
 import BackgroundImage from "../../resources/BackgroundImage/BACKGROUND.jpg";
 
 const Signup = () => {
- const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState({});
   const [error, setError] = useState(null);
   const navigate = useNavigate();
   const [flag, setFlag] = useState(false);
   const [selectrole, Setselectrole] = useState("USER");
   const [loader, setLoader] = useState(false);
+  
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -28,7 +29,6 @@ const Signup = () => {
     if (formData.phone && formData.phone.length !== 10) {
       hasError = true;
       setError("Mobile number is Invalid");
-      console.log("number clicked");
     } else if (formData.password !== formData.confirmpassword) {
       hasError = true;
       setError("Password must be same");
@@ -44,7 +44,6 @@ const Signup = () => {
   };
 
   const Calling = async () => {
-  
     try {
       setLoader(true);
       const response = await axios.post(
@@ -69,53 +68,71 @@ const Signup = () => {
   }
 
   return (
-    <div className="bg-center min-h-screen w-screen bg-repeat bg-gray-500 bg-blend-multiply" style={{ backgroundImage: `url(${BackgroundImage})` }}>
-      <div className="flex flex-col items-center justify-center px-6  mx-auto p-10 ">
-        <div className="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-transparent dark:border-gray-700">
-          <div className="p-6 space-y-4 md:space-y-6 sm:p-8">
-            <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white">
-              Create your account
+    <div 
+      className="min-h-screen w-screen bg-cover bg-center bg-no-repeat relative"
+      style={{ backgroundImage: `url(${BackgroundImage})` }}
+    >
+      {/* Overlay */}
+      <div className="absolute inset-0 bg-gaming-darker/80 backdrop-blur-sm" />
+      
+      {/* Content */}
+      <div className="relative flex flex-col items-center justify-center px-6 py-8 mx-auto min-h-screen">
+        <div className="w-full max-w-md animate-fade-in">
+          {/* Logo */}
+          <Link to="/" className="flex items-center justify-center mb-6 group">
+            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-gaming-accent to-gaming-purple 
+                          flex items-center justify-center shadow-lg group-hover:shadow-gaming-accent/50 
+                          transition-all duration-300 group-hover:scale-110">
+              <svg className="w-7 h-7 text-white" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+              </svg>
+            </div>
+            <span className="ml-3 text-2xl font-bold gradient-text">G2Store</span>
+          </Link>
+
+          {/* Form Card */}
+          <div className="card p-8 animate-slide-up">
+            <h1 className="text-3xl font-bold text-center mb-2">
+              <span className="gradient-text">Create Account</span>
             </h1>
-            <form className="space-y-3 md:space-y-3" onSubmit={handleSubmit}>
+            <p className="text-center text-gray-400 mb-6">Join the ultimate gaming community</p>
+            
+            <form className="space-y-4" onSubmit={handleSubmit}>
+              {/* Name */}
               <div>
-                <label
-                  htmlFor="name"
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >
-                  Name
+                <label htmlFor="name" className="block mb-2 text-sm font-medium text-gray-200">
+                  Full Name
                 </label>
                 <input
                   type="text"
                   name="name"
                   id="name"
                   onChange={handleChange}
-                  className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  placeholder="Manish Patidar"
+                  className="input-field w-full p-3"
+                  placeholder="John Doe"
                   required
                 />
               </div>
+
+              {/* Email */}
               <div>
-                <label
-                  htmlFor="email"
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >
-                  email
+                <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-200">
+                  Email Address
                 </label>
                 <input
                   type="email"
                   name="email"
                   onChange={handleChange}
                   id="email"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                  placeholder="name@company.com"
+                  className="input-field w-full p-3"
+                  placeholder="your@email.com"
                   required
                 />
               </div>
+
+              {/* Phone */}
               <div>
-                <label
-                  htmlFor="phone"
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >
+                <label htmlFor="phone" className="block mb-2 text-sm font-medium text-gray-200">
                   Mobile Number
                 </label>
                 <input
@@ -123,33 +140,30 @@ const Signup = () => {
                   name="phone"
                   onChange={handleChange}
                   id="number"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none [&::-moz-number-spin-box]:appearance-none  "
-                  placeholder="6266209758"
+                  className="input-field w-full p-3"
+                  placeholder="1234567890"
                   required
                 />
               </div>
-              <div>
-                <label
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                  htmlFor="role"
-                >
-                  Select your Role
-                </label>
 
+              {/* Role */}
+              <div>
+                <label htmlFor="role" className="block mb-2 text-sm font-medium text-gray-200">
+                  Select Your Role
+                </label>
                 <select
                   name="role"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  className="input-field w-full p-3 cursor-pointer"
                   onChange={handleRole}
                 >
                   <option value="USER">USER</option>
                   <option value="ADMIN">ADMIN</option>
                 </select>
               </div>
+
+              {/* Password */}
               <div>
-                <label
-                  htmlFor="password"
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >
+                <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-200">
                   Password
                 </label>
                 <input
@@ -157,16 +171,15 @@ const Signup = () => {
                   name="password"
                   id="password"
                   onChange={handleChange}
-                  placeholder="*************"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  placeholder="••••••••"
+                  className="input-field w-full p-3"
                   required
                 />
               </div>
+
+              {/* Confirm Password */}
               <div>
-                <label
-                  htmlFor="confirmpassword"
-                  className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-                >
+                <label htmlFor="confirmpassword" className="block mb-2 text-sm font-medium text-gray-200">
                   Confirm Password
                 </label>
                 <input
@@ -174,102 +187,50 @@ const Signup = () => {
                   name="confirmpassword"
                   id="confirmpassword"
                   onChange={handleChange}
-                  placeholder="*************"
-                  className="bg-gray-50 border border-gray-300 text-gray-900 rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                  placeholder="••••••••"
+                  className="input-field w-full p-3"
                   required
                 />
               </div>
-            
-              {flag && error ? (
-                <div className="text-red-600">{error}</div>
-              ) : (
-                <div></div>
+
+              {/* Error Message */}
+              {flag && error && (
+                <div className="p-3 bg-red-500/20 border border-red-500/50 rounded-lg">
+                  <p className="text-red-400 text-sm">{error}</p>
+                </div>
               )}
 
+              {/* Submit Button */}
               <button
                 type="submit"
-                className="w-full text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                className="btn-primary w-full py-3 text-base mt-6"
               >
-                Sign up
+                Create Account
               </button>
-              <p className="text-sm font-light text-gray-500 dark:text-gray-400 text-center">
-                already have an account yet?{" "}
+
+              {/* Login Link */}
+              <p className="text-sm text-center text-gray-400">
+                Already have an account?{" "}
                 <Link
                   to="/login"
-                  className="font-medium text-primary-600 hover:underline dark:text-blue-700"
+                  className="font-medium text-gaming-accent hover:text-gaming-accent-light 
+                           transition-colors duration-200"
                 >
-                  Login 
+                  Login
                 </Link>
               </p>
             </form>
 
-            {/* <div
-              id="third-party-auth"
-              className="flex items-center justify-center mt-5 flex-wrap"
-            >
-              <button className="hover:scale-105 ease-in-out duration-300 shadow-lg p-2 rounded-lg m-1">
-                <img
-                  className="max-w-[25px]"
-                  src="https://ucarecdn.com/8f25a2ba-bdcf-4ff1-b596-088f330416ef/"
-                  alt="Google"
-                />
-              </button>
-              <button className="hover:scale-105 ease-in-out duration-300 shadow-lg p-2 rounded-lg m-1">
-                <img
-                  className="max-w-[25px]"
-                  src="https://ucarecdn.com/95eebb9c-85cf-4d12-942f-3c40d7044dc6/"
-                  alt="Linkedin"
-                />
-              </button>
-              <button className="hover:scale-105 ease-in-out duration-300 shadow-lg p-2 rounded-lg m-1">
-                <img
-                  className="max-w-[25px] filter dark:invert"
-                  src="https://ucarecdn.com/be5b0ffd-85e8-4639-83a6-5162dfa15a16/"
-                  alt="Github"
-                />
-              </button>
-              <button className="hover:scale-105 ease-in-out duration-300 shadow-lg p-2 rounded-lg m-1">
-                <img
-                  className="max-w-[25px]"
-                  src="https://ucarecdn.com/6f56c0f1-c9c0-4d72-b44d-51a79ff38ea9/"
-                  alt="Facebook"
-                />
-              </button>
-              <button className="hover:scale-105 ease-in-out duration-300 shadow-lg p-2 rounded-lg m-1">
-                <img
-                  className="max-w-[25px] dark:gray-100"
-                  src="https://ucarecdn.com/82d7ca0a-c380-44c4-ba24-658723e2ab07/"
-                  alt="Twitter"
-                />
-              </button>
-              <button className="hover:scale-105 ease-in-out duration-300 shadow-lg p-2 rounded-lg m-1">
-                <img
-                  className="max-w-[25px]"
-                  src="https://ucarecdn.com/3277d952-8e21-4aad-a2b7-d484dad531fb/"
-                  alt="Apple"
-                />
-              </button>
-            </div> */}
-
-            <div className="text-gray-500 flex text-center flex-col mt-4 items-center text-sm">
-              <p className="cursor-default">
-                By signing in, you agree to our{" "}
-                <Link
-                  className="group text-blue-400 transition-all duration-100 ease-in-out"
-                  to="#"
-                >
-                  <span className="cursor-pointer bg-left-bottom bg-gradient-to-r from-blue-400 to-blue-400 bg-[length:0%_2px] bg-no-repeat group-hover:bg-[length:100%_2px] transition-all duration-500 ease-out">
-                    Terms
-                  </span>
+            {/* Terms */}
+            <div className="mt-6 pt-6 border-t border-gray-700/50">
+              <p className="text-xs text-center text-gray-500">
+                By signing up, you agree to our{" "}
+                <Link to="#" className="text-gaming-accent hover:text-gaming-accent-light transition-colors">
+                  Terms of Service
                 </Link>{" "}
                 and{" "}
-                <Link
-                  className="group text-blue-400 transition-all duration-100 ease-in-out"
-                  to="#"
-                >
-                  <span className="cursor-pointer bg-left-bottom bg-gradient-to-r from-blue-400 to-blue-400 bg-[length:0%_2px] bg-no-repeat group-hover:bg-[length:100%_2px] transition-all duration-500 ease-out">
-                    Privacy Policy
-                  </span>
+                <Link to="#" className="text-gaming-accent hover:text-gaming-accent-light transition-colors">
+                  Privacy Policy
                 </Link>
               </p>
             </div>

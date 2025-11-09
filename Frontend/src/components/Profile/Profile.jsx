@@ -4,6 +4,7 @@ import Alert from "../AlertAndHelper/Alert";
 import Navbar from "../HeaderAndFooter/Navbar";
 import { useNavigate } from "react-router-dom";
 import Loader from "../AlertAndHelper/Loader";
+import Footer from "../HeaderAndFooter/Footer";
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -119,196 +120,258 @@ const Profile = () => {
   }, []);
 
   if (loader) {
-    return <Loader/>
+    return <Loader />;
   }
 
   return (
-    <>
+    <div className="min-h-screen bg-gaming-darker flex flex-col">
       <Navbar />
-      {errorFlag && errorMessage ? (
+      
+      {errorFlag && errorMessage && (
         <Alert
           type={success ? "success" : "danger"}
           message={errorMessage}
           visible={errorFlag}
           setVisible={setErrorFlag}
         />
-      ) : (
-        ""
       )}
-      <section className="min-h-screen flex items-center justify-center py-12">
-        <div className="w-[1100px] h-[700px]">
-          <div className="bg-gray-600/40 rounded-3xl shadow-2xl overflow-hidden">
-            <div className="flex h-full flex-col md:flex-row">
-              <div className=" md:w-1/3 text-white text-center p-16 flex flex-col items-center justify-center rounded-l-3xl">
-                <img
-                  src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava1-bg.webp"
-                  alt="Avatar"
-                  className="w-52 h-52 rounded-full mb-8 border-4 border-white shadow-lg"
-                />
-                <h5 className="text-2xl font-bold">{profileData.name}</h5>
-                <p className="text-xl">{profileData.role}</p>
-              </div>
-              <div className="md:w-2/3 p-16">
-                <h6 className="text-4xl text-blue-600 font-bold">
-                  Information
-                </h6>
-                <hr className="my-6 border-gray-300" />
-                <div className="flex flex-col sm:flex-row justify-between text-2xl">
-                  <div>
-                    <h6 className="text-gray-100 font-semibold">Email</h6>
-                    <p className="text-gray-300">{profileData.email}</p>
+
+      <div className="flex-1 pt-24 pb-16 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-6xl mx-auto">
+          {/* Page Header */}
+          <div className="mb-8 animate-fade-in">
+            <h1 className="text-4xl md:text-5xl font-bold text-center mb-2">
+              <span className="gradient-text">Your Profile</span>
+            </h1>
+            <p className="text-center text-gray-400">Manage your account settings</p>
+          </div>
+
+          {/* Profile Card */}
+          <div className="card overflow-hidden animate-slide-up">
+            <div className="grid md:grid-cols-3 gap-0">
+              {/* Profile Sidebar */}
+              <div className="bg-gradient-to-br from-gaming-accent/20 to-gaming-purple/20 
+                            p-8 flex flex-col items-center justify-center space-y-4 border-b md:border-b-0 md:border-r border-gray-700/50">
+                <div className="relative">
+                  <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-gaming-accent shadow-lg shadow-gaming-accent/50">
+                    <img
+                      src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava1-bg.webp"
+                      alt="Avatar"
+                      className="w-full h-full object-cover"
+                    />
                   </div>
-                  <div>
-                    <h6 className="text-gray-100 font-semibold">Phone</h6>
-                    <p className="text-gray-300">{profileData.number}</p>
+                  <div className="absolute -bottom-2 -right-2 bg-gaming-accent rounded-full p-2">
+                    <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"/>
+                    </svg>
                   </div>
                 </div>
-                <div className="flex sm:flex-row flex-col  justify-center mt-5 space-x-3">
-                  <div
-                    className={`${
-                      changePassword
-                        ? "hidden"
-                        : "visible flex flex-col w-1/2 sm:w-4/12 space-y-5 mt-12"
-                    }`}
-                  >
-                    <button
-                      type="button"
-                      onClick={() => setChangePassword(true)}
-                      className="text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-500 dark:focus:ring-blue-800"
-                    >
-                      {changePassword ? "Submit" : "Change Password"}
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setIsVisible(true)}
-                      className="text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900"
-                    >
-                      Delete Account
-                    </button>
-                  </div>
+                <div className="text-center">
+                  <h2 className="text-2xl font-bold text-white mb-1">{profileData.name}</h2>
+                  <span className="px-4 py-1 bg-gaming-purple/30 rounded-full text-gaming-purple text-sm font-medium">
+                    {profileData.role}
+                  </span>
+                </div>
+              </div>
 
-                  {/* Changing Password Form */}
-                  <form
-                    className={`max-w-lg text-xl mx-auto my-[0.5%] ${
-                      changePassword ? "visible" : "hidden"
-                    }`}
-                    onSubmit={handleSubmit}
-                    ref={formRef}
-                  >
-                    {[
-                      {
-                        id: "oldPassword",
-                        type: "password",
-                        label: "Old Password",
-                      },
-                      {
-                        id: "newPassword",
-                        type: "password",
-                        label: "New Password",
-                      },
-                      {
-                        id: "confirmPassword",
-                        type: "password",
-                        label: "Confirm Password",
-                      },
-                    ].map((field) => (
-                      <div
-                        className="relative z-0 w-full mb-5 group"
-                        key={field.id}
-                      >
-                        <input
-                          type={field.type}
-                          id={field.id}
-                          onChange={handleChange}
-                          name={field.id}
-                          className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-                          placeholder=" "
-                          required
-                        />
-                        <label
-                          htmlFor={field.id}
-                          className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:start-0 rtl:peer-focus:translate-x-1/4 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-                        >
-                          {field.label}
-                        </label>
+              {/* Profile Content */}
+              <div className="md:col-span-2 p-8">
+                {!changePassword ? (
+                  <div className="space-y-6 animate-fade-in">
+                    <div>
+                      <h3 className="text-2xl font-bold gradient-text mb-6">Account Information</h3>
+                      
+                      <div className="space-y-4">
+                        <div className="flex items-start gap-4 p-4 rounded-lg bg-gray-700/30 hover:bg-gray-700/50 transition-colors">
+                          <div className="p-2 bg-gaming-accent/20 rounded-lg">
+                            <svg className="w-6 h-6 text-gaming-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                            </svg>
+                          </div>
+                          <div className="flex-1">
+                            <p className="text-sm text-gray-400">Email Address</p>
+                            <p className="text-lg text-white font-medium">{profileData.email}</p>
+                          </div>
+                        </div>
+
+                        <div className="flex items-start gap-4 p-4 rounded-lg bg-gray-700/30 hover:bg-gray-700/50 transition-colors">
+                          <div className="p-2 bg-gaming-cyan/20 rounded-lg">
+                            <svg className="w-6 h-6 text-gaming-cyan" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+                            </svg>
+                          </div>
+                          <div className="flex-1">
+                            <p className="text-sm text-gray-400">Phone Number</p>
+                            <p className="text-lg text-white font-medium">{profileData.number}</p>
+                          </div>
+                        </div>
                       </div>
-                    ))}
-                    <div className="flex justify-between">
+                    </div>
+
+                    <div className="pt-6 border-t border-gray-700/50">
+                      <h4 className="text-lg font-semibold text-gray-300 mb-4">Account Actions</h4>
+                      <div className="flex flex-col sm:flex-row gap-3">
+                        <button
+                          onClick={() => setChangePassword(true)}
+                          className="flex-1 px-6 py-3 bg-gradient-to-r from-gaming-accent to-gaming-purple 
+                                   hover:from-gaming-accent-light hover:to-purple-500 text-white font-semibold 
+                                   rounded-lg transition-all duration-300 transform hover:scale-105 
+                                   focus:outline-none focus:ring-2 focus:ring-gaming-accent/50"
+                        >
+                          <span className="flex items-center justify-center gap-2">
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"/>
+                            </svg>
+                            Change Password
+                          </span>
+                        </button>
+                        <button
+                          onClick={() => setIsVisible(true)}
+                          className="flex-1 px-6 py-3 bg-gradient-to-r from-red-500 to-red-600 
+                                   hover:from-red-600 hover:to-red-700 text-white font-semibold 
+                                   rounded-lg transition-all duration-300 transform hover:scale-105 
+                                   focus:outline-none focus:ring-2 focus:ring-red-500/50"
+                        >
+                          <span className="flex items-center justify-center gap-2">
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                            </svg>
+                            Delete Account
+                          </span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="animate-fade-in">
+                    <div className="flex items-center justify-between mb-6">
+                      <h3 className="text-2xl font-bold gradient-text">Change Password</h3>
                       <button
-                        type="submit"
-                        className="text-blue-700 hover:text-white border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-500 dark:focus:ring-blue-800"
+                        onClick={() => setChangePassword(false)}
+                        className="p-2 hover:bg-gray-700/50 rounded-lg transition-colors"
                       >
-                        Submit
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setChangePassword(false);
-                        }}
-                        className="text-red-700 hover:text-white border border-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 dark:border-red-500 dark:text-red-500 dark:hover:text-white dark:hover:bg-red-600 dark:focus:ring-red-900"
-                      >
-                        Cancel
+                        <svg className="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
                       </button>
                     </div>
-                  </form>
-                </div>
+
+                    <form onSubmit={handleSubmit} ref={formRef} className="space-y-5">
+                      {[
+                        { id: "oldPassword", label: "Current Password", icon: "M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" },
+                        { id: "newPassword", label: "New Password", icon: "M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" },
+                        { id: "confirmPassword", label: "Confirm New Password", icon: "M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" },
+                      ].map((field) => (
+                        <div key={field.id} className="space-y-2">
+                          <label htmlFor={field.id} className="block text-sm font-medium text-gray-300">
+                            {field.label}
+                          </label>
+                          <div className="relative">
+                            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                              <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d={field.icon}/>
+                              </svg>
+                            </div>
+                            <input
+                              type="password"
+                              id={field.id}
+                              name={field.id}
+                              onChange={handleChange}
+                              required
+                              className="input-field pl-10"
+                              placeholder={`Enter ${field.label.toLowerCase()}`}
+                            />
+                          </div>
+                        </div>
+                      ))}
+
+                      <div className="flex gap-3 pt-4">
+                        <button
+                          type="submit"
+                          className="btn-primary flex-1 py-3"
+                        >
+                          <span className="flex items-center justify-center gap-2">
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"/>
+                            </svg>
+                            Update Password
+                          </span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setChangePassword(false)}
+                          className="btn-secondary flex-1 py-3"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                )}
               </div>
             </div>
           </div>
         </div>
-      </section>
+      </div>
 
-     {/* This is Pop Box for Delete an item */}
-     {isVisible && (
-        <div className="z-20 top-0 left-0 flex justify-center bg-black/60 items-center h-screen w-screen fixed">
-          <div className=" bg-gray-700 border-8 border-t-red-600 border-gray-700">
-            <section className=" p-6">
-              <div className="flex gap-4 justify-center items-center">
-                <svg
-                  className="  text-gray-400 w-12 h-12 dark:text-red-500"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-                  />
-                </svg>
-                <h1 className=" text-2xl text-center font-bold text-white">
-                  Delete Account
-                </h1>
+      {/* Delete Confirmation Modal */}
+      {isVisible && (
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm animate-fade-in"
+          onClick={closeDialog}
+        >
+          <div 
+            className="card max-w-md w-full mx-4 overflow-hidden animate-scale-in"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="bg-gradient-to-r from-red-500/20 to-red-600/20 p-6 border-b border-red-500/30">
+              <div className="flex items-center gap-4">
+                <div className="p-3 bg-red-500/20 rounded-full">
+                  <svg className="w-8 h-8 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                  </svg>
+                </div>
+                <div>
+                  <h2 className="text-2xl font-bold text-white">Delete Account</h2>
+                  <p className="text-red-400 text-sm">This action cannot be undone</p>
+                </div>
               </div>
-              <p className="mt-4 text-xl text-gray-300">
-                Are you sure to delete this Account Permanent?
+            </div>
+            
+            <div className="p-6">
+              <p className="text-gray-300 text-lg mb-6">
+                Are you sure you want to permanently delete your account? All your data will be lost forever.
               </p>
-
-              <footer className="  flex justify-between items-center mt-6">
+              
+              <div className="flex gap-3">
                 <button
-                  className="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
                   onClick={() => {
-                   handleDelete()
+                    handleDelete();
                     closeDialog();
                   }}
+                  className="flex-1 px-6 py-3 bg-gradient-to-r from-red-500 to-red-600 
+                           hover:from-red-600 hover:to-red-700 text-white font-semibold 
+                           rounded-lg transition-all duration-300 transform hover:scale-105 
+                           focus:outline-none focus:ring-2 focus:ring-red-500/50"
                 >
-                  Yes
+                  Yes, Delete
                 </button>
                 <button
-                  className="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
                   onClick={closeDialog}
+                  className="flex-1 px-6 py-3 bg-gray-700 hover:bg-gray-600 text-white 
+                           font-semibold rounded-lg transition-all duration-300 
+                           focus:outline-none focus:ring-2 focus:ring-gray-500/50"
                 >
-                  No
+                  Cancel
                 </button>
-              </footer>
-            </section>
+              </div>
+            </div>
           </div>
         </div>
       )}
-    </>
+
+      <Footer />
+    </div>
   );
 };
 

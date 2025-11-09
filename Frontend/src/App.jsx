@@ -22,6 +22,7 @@ import EmailInput from "./components/ForgotPassword/EmailInput";
 import ChangePassword from "./components/ForgotPassword/ChangePassword";
 import ResetPassword from "./components/ForgotPassword/ResetPassword";
 import MainLoader from "./components/AlertAndHelper/MainLoader";
+import NotFound from "./components/NotFound/NotFound";
 
 
 function App() {
@@ -47,6 +48,7 @@ function App() {
         <Route path="/sendOtp" element={<EmailInput />} />
         <Route path="/verifyOtp" element={<ResetPassword />} />
         <Route path="/changePassword" element={<ChangePassword />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </>
   );

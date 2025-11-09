@@ -5,16 +5,16 @@ import Loader from "../AlertAndHelper/MainLoader";
 import Alert from "../AlertAndHelper/Alert";
 
 const Cards = () => {
-  const [products, setProducts] = useState([]); // State to store products
-  const [loading, setLoading] = useState(false); // Loading state
-  const [originalProducts, setOriginalProducts] = useState([]); // State to store original products
-  const [cartStatus, setCartStatus] = useState({}); // State to store cart status for each product
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [originalProducts, setOriginalProducts] = useState([]);
+  const [cartStatus, setCartStatus] = useState({});
   const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState("");
   const [errorFlag, setErrorFlag] = useState(false);
   const [success, setSuccess] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState("All Products");
 
-  // All Product show in list
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -44,7 +44,6 @@ const Cards = () => {
     fetchProducts();
   }, []);
 
-  // Add Product to Cart
   const addProductCart = async (product) => {
     try {
       const token = localStorage.getItem("token");
@@ -79,7 +78,6 @@ const Cards = () => {
     }
   };
 
-  // Remove Product from Cart
   const removeProductCart = async (name) => {
     try {
       const token = localStorage.getItem("token");
@@ -103,7 +101,7 @@ const Cards = () => {
     } catch (error) {
       setSuccess(false);
       setErrorFlag(true);
-      setErrorMessage(error.response?.data?.message || "An error occurred.");
+      setErrorMessage(error.response?.data?.message || "Failed to remove item from cart");
       setLoading(false);
     }
   };
@@ -123,12 +121,24 @@ const Cards = () => {
     "MOBA",
   ];
 
+  const handleCategoryClick = (cat) => {
+    setSelectedCategory(cat);
+    if (cat === "All Products") {
+      setProducts(originalProducts);
+    } else {
+      const filteredProducts = originalProducts.filter(
+        (product) => product.typeOfProduct === cat
+      );
+      setProducts(filteredProducts);
+    }
+  };
+
   if (loading) {
     return <Loader />;
   }
 
   return (
-    <div>
+    <div id="games" className="min-h-screen py-20 px-4 sm:px-6 lg:px-8">
       {errorFlag && errorMessage && (
         <Alert
           type={success ? "success" : "danger"}
@@ -137,95 +147,142 @@ const Cards = () => {
           setVisible={setErrorFlag}
         />
       )}
-      <div className="flex items-center justify-center py-4 md:py-8 flex-wrap">
-        {category.map((cat, index) => (
-          <button
-            key={index}
-            onClick={() => {
-              if (cat === "All Products") {
-                setProducts(originalProducts);
-              } else {
-                const filteredProducts = originalProducts.filter(
-                  (product) => product.typeOfProduct === cat
-                );
-                setProducts(filteredProducts);
-              }
-            }}
-            className="text-blue-700 hover:text-white border border-blue-600 bg-white hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-full text-base font-medium px-5 py-2.5 text-center me-3 mb-3 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:hover:bg-blue-500 dark:bg-gray-900 dark:focus:ring-blue-800"
-          >
-            {cat}
-          </button>
-        ))}
+
+      {/* Section Header */}
+      <div className="max-w-7xl mx-auto mb-12 text-center animate-fade-in">
+        <h2 className="text-4xl sm:text-5xl font-bold mb-4">
+          <span className="gradient-text">Discover</span> Amazing Games
+        </h2>
+        <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+          Browse through our collection of premium games across various genres
+        </p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 mt-5 mb-5 mx-10 justify-evenly gap-5">
-        {products.map((product, index) => (
-          <div
-            
-            key={index}
-            className="hover:scale-105 duration-700 ease-in-out max-h-sm max-w-sm bg-gray-800 border border-gray-700 rounded-lg shadow-lg dark:bg-gray-900 dark:border-gray-800"
-          >
-            <img
-              className="rounded-t-lg"
-              onClick={() => navigate("/productdetails", { state: product })}
-              src={`${product.main_Image}`}
-              alt=""
-            />
+      {/* Category Filter */}
+      <div className="max-w-7xl mx-auto mb-12">
+        <div className="flex flex-wrap items-center justify-center gap-3 animate-slide-up">
+          {category.map((cat, index) => (
+            <button
+              key={index}
+              onClick={() => handleCategoryClick(cat)}
+              className={`px-6 py-2.5 rounded-full font-medium transition-all duration-300 
+                       transform hover:scale-105 focus:outline-none focus:ring-2 
+                       ${
+                         selectedCategory === cat
+                           ? "bg-gradient-to-r from-gaming-accent to-gaming-purple text-white shadow-lg shadow-gaming-accent/30"
+                           : "bg-gray-800/50 text-gray-300 border border-gray-700 hover:border-gaming-accent hover:text-white hover:bg-gray-700/50"
+                       }`}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+      </div>
 
-            <div className="p-5">
-              <div  onClick={() => navigate("/productdetails", { state: product })}>
-              <h5 className=" text-2xl font-bold tracking-tight text-white">
-                {product.name}
-              </h5>
-              <p className="mb-3 text-pink-400">{product.company}</p>
-              <p className="mb-3 text-gray-500">
-                {product.name}is a best {product.typeOfProduct} Game. It is
-                Publish by {product.company} on {product.localDate}{" "}
-              </p>
-              <p className="text-green-400 mb-3">
-                ₹{product.price}{" "}
-                <span className="line-through text-green-600">
-                  {product.largePrice}
-                </span>
-              </p>
+      {/* Products Grid */}
+      <div className="max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
+          {products.map((product, index) => (
+            <div
+              key={index}
+              className="card card-glow group animate-scale-in overflow-hidden"
+              style={{ animationDelay: `${index * 0.05}s` }}
+            >
+              {/* Image Container */}
+              <div 
+                className="relative overflow-hidden cursor-pointer"
+                onClick={() => navigate("/productdetails", { state: product })}
+              >
+                <img
+                  className="w-full h-64 object-cover transform group-hover:scale-110 
+                           transition-transform duration-500"
+                  src={`${product.main_Image}`}
+                  alt={product.name}
+                />
+                {/* Overlay on hover */}
+                <div className="absolute inset-0 bg-gradient-to-t from-gaming-darker via-transparent 
+                              to-transparent opacity-0 group-hover:opacity-100 transition-opacity 
+                              duration-300" />
               </div>
-              {localStorage.getItem("role") === "USER" && (
-                <button
-                  type="button"
-                  onClick={
-                    cartStatus[product.name]
-                      ? () => removeProductCart(product.name)
-                      : () => addProductCart(product)
-                  }
-                  className={`inline-flex w-full justify-center items-center px-3 py-2 text-sm ${
-                    cartStatus[product.name]
-                      ? "text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
-                      : "text-white bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
-                  }`}
+
+              {/* Content */}
+              <div className="p-5">
+                <div
+                  onClick={() => navigate("/productdetails", { state: product })}
+                  className="cursor-pointer"
                 >
-                  {cartStatus[product.name]
-                    ? "Remove From Cart"
-                    : "Add to cart"}
-                  <svg
-                    className="rtl:rotate-180 w-3.5 h-3.5 ms-2"
-                    aria-hidden="true"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 14 10"
+                  <h5 className="text-xl font-bold text-white mb-2 line-clamp-1 
+                               group-hover:text-gaming-accent-light transition-colors duration-200">
+                    {product.name}
+                  </h5>
+                  <p className="text-sm font-medium text-gaming-pink mb-2">
+                    {product.company}
+                  </p>
+                  <p className="text-sm text-gray-400 mb-3 line-clamp-2">
+                    {product.name} is a best {product.typeOfProduct} Game. It is
+                    Published by {product.company} on {product.localDate}
+                  </p>
+                  <div className="flex items-baseline gap-2 mb-4">
+                    <span className="text-2xl font-bold text-green-400">
+                      ₹{product.price}
+                    </span>
+                    {product.largePrice && (
+                      <span className="text-sm line-through text-gray-500">
+                        ₹{product.largePrice}
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {/* Add to Cart Button */}
+                {localStorage.getItem("role") === "USER" && (
+                  <button
+                    type="button"
+                    onClick={
+                      cartStatus[product.name]
+                        ? () => removeProductCart(product.name)
+                        : () => addProductCart(product)
+                    }
+                    className={`w-full py-3 px-4 rounded-lg font-semibold transition-all duration-300
+                             transform hover:scale-105 hover:shadow-lg focus:outline-none focus:ring-2 
+                             ${
+                               cartStatus[product.name]
+                                 ? "bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white focus:ring-red-500/50"
+                                 : "bg-gradient-to-r from-gaming-accent to-gaming-purple hover:from-gaming-accent-light hover:to-purple-500 text-white focus:ring-gaming-accent/50"
+                             }`}
                   >
-                    <path
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M1 5h12m0 0L9 1m4 4L9 9"
-                    />
-                  </svg>
-                </button>
-              )}
+                    {cartStatus[product.name] ? (
+                      <span className="flex items-center justify-center gap-2">
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"/>
+                        </svg>
+                        Remove from Cart
+                      </span>
+                    ) : (
+                      <span className="flex items-center justify-center gap-2">
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
+                        </svg>
+                        Add to Cart
+                      </span>
+                    )}
+                  </button>
+                )}
+              </div>
             </div>
+          ))}
+        </div>
+
+        {/* No Results */}
+        {products.length === 0 && !loading && (
+          <div className="text-center py-20 animate-fade-in">
+            <svg className="w-24 h-24 mx-auto text-gray-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/>
+            </svg>
+            <h3 className="text-2xl font-bold text-gray-400 mb-2">No Games Found</h3>
+            <p className="text-gray-500">Try selecting a different category</p>
           </div>
-        ))}
+        )}
       </div>
     </div>
   );

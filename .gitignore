@@ -1,0 +1,53 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# Java / Maven
+Backend/*/target/
+**/target/
+*.class
+*.jar
+*.war
+*.ear
+logs/
+*.log
+hs_err_pid*
+
+# Maven wrapper (these files should be committed to the repo)
+
+# IntelliJ
+.idea/
+*.iml
+out/
+
+# VSCode
+.vscode/
+
+# Node
+Frontend/node_modules/
+Frontend/dist/
+Frontend/build/
+/.parcel-cache
+
+# Environment files
+Frontend/.env
+Frontend/.env.*
+
+# Docker
+docker-compose.override.yml
+docker-compose.local.yml
+
+# OS generated files
+*.swp
+
+# npm logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# temporary files
+tmp/
+.cache/
+
+# generated files
+Frontend/.vite/

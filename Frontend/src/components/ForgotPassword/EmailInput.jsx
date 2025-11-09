@@ -42,8 +42,9 @@ const EmailInput = () => {
   if (loader) {
     return <Loader />;
   }
+  
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-900">
+    <div className="min-h-screen bg-gaming-darker flex items-center justify-center px-4">
       {errorFlag && errorMessage && (
         <Alert
           type={success ? "success" : "danger"}
@@ -52,60 +53,72 @@ const EmailInput = () => {
           setVisible={setErrorFlag}
         />
       )}
-      <div className="bg-gray-800 p-6 rounded-lg shadow-lg text-white w-96 text-center">
+      
+      <div className="card max-w-md w-full p-8 animate-fade-in">
         {/* Icon */}
-        <div className="flex justify-center mb-4">
-          <div className="relative w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center">
-            <svg
-              className="w-10 h-10 text-gray-900"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path d="M12 2a6 6 0 00-6 6v2H4v12h16V10h-2V8a6 6 0 00-6-6zm0 2a4 4 0 014 4v2h-8V8a4 4 0 014-4zm-6 8h12v10H6V12z" />
+        <div className="flex justify-center mb-6">
+          <div className="w-20 h-20 bg-gradient-to-br from-gaming-accent to-gaming-purple rounded-full 
+                        flex items-center justify-center shadow-lg shadow-gaming-accent/50">
+            <svg className="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 2a6 6 0 00-6 6v2H4v12h16V10h-2V8a6 6 0 00-6-6zm0 2a4 4 0 014 4v2h-8V8a4 4 0 014-4zm-6 8h12v10H6V12z"/>
             </svg>
           </div>
         </div>
 
         {/* Title */}
-        <h2 className="text-xl font-semibold">OTP Verification</h2>
-        <p className="text-gray-400 text-sm mt-2">
-          Enter your email to Generate Otp.
-        </p>
+        <div className="text-center mb-8">
+          <h2 className="text-3xl font-bold mb-2">
+            <span className="gradient-text">Reset Password</span>
+          </h2>
+          <p className="text-gray-400">
+            Enter your email address to receive a verification code
+          </p>
+        </div>
 
-        {/* Email Input */}
-        <form onSubmit={handleSubmit}>
-          <div className="relative mt-5">
-            <div className="absolute inset-y-0 start-0 flex items-center ps-3.5 pointer-events-none">
-              <svg
-                className="w-4 h-4 text-gray-500 dark:text-gray-400"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="currentColor"
-                viewBox="0 0 20 16"
-              >
-                <path d="m10.036 8.278 9.258-7.79A1.979 1.979 0 0 0 18 0H2A1.987 1.987 0 0 0 .641.541l9.395 7.737Z" />
-                <path d="M11.241 9.817c-.36.275-.801.425-1.255.427-.428 0-.845-.138-1.187-.395L0 2.6V14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V2.5l-8.759 7.317Z" />
-              </svg>
+        {/* Email Input Form */}
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
+              Email Address
+            </label>
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <svg className="w-5 h-5 text-gray-400" fill="currentColor" viewBox="0 0 20 16">
+                  <path d="m10.036 8.278 9.258-7.79A1.979 1.979 0 0 0 18 0H2A1.987 1.987 0 0 0 .641.541l9.395 7.737Z"/>
+                  <path d="M11.241 9.817c-.36.275-.801.425-1.255.427-.428 0-.845-.138-1.187-.395L0 2.6V14a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V2.5l-8.759 7.317Z"/>
+                </svg>
+              </div>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                onChange={handleChange}
+                required
+                className="input-field pl-10"
+                placeholder="example@gmail.com"
+              />
             </div>
-            <input
-              type="email"
-              id="input-group-1"
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-              placeholder="example@gmail.com"
-              required
-              name="email"
-              onChange={handleChange}
-            />
           </div>
-          {/* Send Code Button */}
-          <button
-            type="submit"
-            className="mt-4 w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg"
-          >
-            Send Code
+
+          <button type="submit" className="btn-primary w-full py-3.5">
+            <span className="flex items-center justify-center gap-2">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+              </svg>
+              Send Verification Code
+            </span>
           </button>
         </form>
+
+        {/* Back to Login */}
+        <div className="mt-6 text-center">
+          <button
+            onClick={() => navigate('/login')}
+            className="text-gaming-accent hover:text-gaming-accent-light transition-colors text-sm"
+          >
+            ← Back to Login
+          </button>
+        </div>
       </div>
     </div>
   );
