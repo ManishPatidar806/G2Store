@@ -4,6 +4,11 @@ Backend/!.mvn/wrapper/maven-wrapper.jar
 Backend/src/main/**/target/
 Backend/src/test/**/target/
 Backend/.env
+Backend/.mvn/wrapper/maven-wrapper.jar
+Backend/.idea
+Backend/*.iws
+Backend/*.iml
+Backend/*.ipr
 
 Frontend/.env
 Frontend/node_modules
