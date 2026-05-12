@@ -17,7 +17,7 @@
     <artifactId>gaming-backend</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>gaming-backend</name>
-    <description>Gaming Backend API</description>
+    <description>G2Store Backend </description>
 
     <properties>
         <java.version>21</java.version>
@@ -148,12 +148,7 @@
             <artifactId>spring-boot-starter-aop</artifactId>
         </dependency>
 
-        <!-- Async Support -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-async</artifactId>
-        </dependency>
-
+    
         <!-- Guava Utilities -->
         <dependency>
             <groupId>com.google.guava</groupId>

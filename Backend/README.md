@@ -1,2 +1,0 @@
-# GamingEcommerce
-# GamingEcommerceBackend
