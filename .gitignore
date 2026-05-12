@@ -1,0 +1,9 @@
+Backend/HELP.md
+Backend/target/
+Backend/!.mvn/wrapper/maven-wrapper.jar
+Backend/src/main/**/target/
+Backend/src/test/**/target/
+Backend/.env
+
+Frontend/.env
+Frontend/node_modules

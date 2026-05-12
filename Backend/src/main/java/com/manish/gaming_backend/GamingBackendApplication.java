@@ -1,0 +1,17 @@
+package com.manish.gaming_backend;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.scheduling.annotation.EnableAsync;
+
+@SpringBootApplication
+@EnableCaching
+@EnableAsync
+public class GamingBackendApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(GamingBackendApplication.class, args);
+    }
+
+}
