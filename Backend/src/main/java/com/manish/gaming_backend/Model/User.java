@@ -32,8 +32,8 @@ public class User {
     @Column(nullable = false, unique = true, length = 190)
     private String email;
 
-    @Column(nullable = false, unique = true, length = 20)
-    private String mobile;
+    @Column(name = "google_id", length = 255)
+    private String googleId;
 
     @Column(nullable = false, length = 100)
     private String password;
