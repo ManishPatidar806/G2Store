@@ -19,15 +19,12 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.validation.annotation.Validated;
 
-import jakarta.validation.constraints.NotBlank;
 import java.util.Collections;
 import java.util.UUID;
 
 @Slf4j
 @Service
-@Validated
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
@@ -54,7 +51,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public ApiResponse<AuthPayload> googleLogin(@NotBlank String idToken) {
+    public ApiResponse<AuthPayload> googleLogin(String idToken) {
         try {
             GoogleIdToken verifiedToken = googleIdTokenVerifier.verify(idToken);
             if (verifiedToken == null) {
@@ -95,7 +92,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @CacheEvict(value = "users", key = "#email")
-    public ApiResponse<AuthPayload> updateRole(@NotBlank String email, @NotBlank String role) {
+    public ApiResponse<AuthPayload> updateRole(String email, String role) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException("User with email " + email + " not found"));
         user.setRole(Role.valueOf(role));
@@ -126,7 +123,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @CacheEvict(value = "users", key = "#email")
-    public ApiResponse<Void> deleteAccount(@NotBlank String email) {
+    public ApiResponse<Void> deleteAccount(String email) {
         userRepository.findByEmail(email)
             .orElseThrow(() -> new UserNotFoundException("Account with this email " + email + " not found"));
         userRepository.deleteByEmail(email);

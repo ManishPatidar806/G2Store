@@ -10,6 +10,7 @@ import com.manish.gaming_backend.Service.userDetails.CustomUserDetail;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -73,7 +74,7 @@ public class OrderStatusController {
     @PatchMapping("/admin/status")
     public ResponseEntity<ApiResponse<?>> updateOrderStatus(
             @RequestParam Long orderId,
-            @RequestParam String status) {
+            @NotBlank(message = "Status is required") @RequestParam String status) {
         if (status == null || status.isBlank()) {
             throw new ValidationException("Status is required");
         }

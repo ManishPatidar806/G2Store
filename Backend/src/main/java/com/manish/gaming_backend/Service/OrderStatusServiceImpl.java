@@ -11,10 +11,7 @@ import com.manish.gaming_backend.Repository.ProductRepository;
 import com.manish.gaming_backend.Request.OrderRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.annotation.Validated;
 
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +19,6 @@ import java.util.Optional;
 
 @Slf4j
 @Service
-@Validated
 public class OrderStatusServiceImpl implements OrderStatusService {
 
     private final OrderStatusRepository orderStatusRepository;
@@ -34,7 +30,7 @@ public class OrderStatusServiceImpl implements OrderStatusService {
     }
 
     @Override
-    public List<OrderStatus> findAllOrder(@NotNull User user) {
+    public List<OrderStatus> findAllOrder(User user) {
         return orderStatusRepository.findByUser(user);
     }
 
@@ -44,7 +40,7 @@ public class OrderStatusServiceImpl implements OrderStatusService {
     }
 
     @Override
-    public OrderStatus updateOrderStatus(@NotNull Long orderId, @NotNull com.manish.gaming_backend.Utils.OrderStatus status) {
+    public OrderStatus updateOrderStatus(Long orderId, com.manish.gaming_backend.Utils.OrderStatus status) {
         Optional<OrderStatus> existingOrder = orderStatusRepository.findById(orderId);
         OrderStatus orderStatus = existingOrder.orElseThrow(() -> new ResourceNotFoundException("Order not found with id: " + orderId));
         orderStatus.setStatus(status);
@@ -52,7 +48,7 @@ public class OrderStatusServiceImpl implements OrderStatusService {
     }
 
     @Override
-    public boolean saveOrderList(@NotNull List<@Valid OrderRequest> orderRequests , @NotNull User user)  {
+    public boolean saveOrderList(List<OrderRequest> orderRequests , User user)  {
         if (orderRequests == null || orderRequests.isEmpty()) {
             throw new ValidationException("Order list cannot be empty");
         }

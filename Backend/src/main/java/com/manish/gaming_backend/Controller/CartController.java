@@ -16,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 
 import java.util.List;
 
@@ -35,7 +37,7 @@ public class CartController {
     @PostMapping("/addToCart")
     public ResponseEntity<ApiResponse<?>> addProductToCart(
             @AuthenticationPrincipal CustomUserDetail userDetails,
-            @RequestBody Product product) {
+            @Valid @RequestBody Product product) {
         Product currentProduct = productService.getProductById(product.getId());
 
         if (cartService.isExistInCart(currentProduct.getName(), userDetails.getUser().getId())) {
@@ -58,7 +60,7 @@ public class CartController {
     @DeleteMapping("/removeFromCart")
     public ResponseEntity<ApiResponse<?>> removeProductFromCart(
             @AuthenticationPrincipal CustomUserDetail userDetails,
-            @RequestParam String productName) {
+            @NotBlank(message = "Product name is required") @RequestParam String productName) {
         
         if (!cartService.isExistInCart(productName, userDetails.getUser().getId())) {
             throw new ResourceNotFoundException("Product not found in cart");

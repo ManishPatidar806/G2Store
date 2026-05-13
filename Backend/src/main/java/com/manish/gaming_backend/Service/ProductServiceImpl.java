@@ -10,15 +10,9 @@ import com.manish.gaming_backend.Repository.ProductRepository;
 import com.manish.gaming_backend.Response.ApiResponse;
 import com.manish.gaming_backend.Response.ProductResponseDTO;
 import com.manish.gaming_backend.Service.userDetails.CustomUserDetail;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.Size;
-import jakarta.validation.Valid;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -26,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-@Validated
 public class ProductServiceImpl implements ProductService {
 
     @Value("${cloudinary.cloud-name}")
@@ -41,9 +34,9 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ApiResponse<?> createProduct(@NotNull CustomUserDetail userDetails,
-                                        @Valid CreateProductRequest request,
-                                        @NotNull @Size(min = 1, max = 5) List<MultipartFile> images) {
+    public ApiResponse<?> createProduct(CustomUserDetail userDetails,
+                                        CreateProductRequest request,
+                                        List<MultipartFile> images) {
         productRepository.findProductByName(request.getName()).ifPresent(
                 product -> {
                     throw new AlreadyExistsException("Product with name " + request.getName() + " already exists.");
