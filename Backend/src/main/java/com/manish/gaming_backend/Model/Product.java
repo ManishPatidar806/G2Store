@@ -1,67 +1,68 @@
-package com.manish.gaming_backend.Model;
+    package com.manish.gaming_backend.Model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+    import com.fasterxml.jackson.annotation.JsonIgnore;
+    import jakarta.persistence.*;
+    import lombok.AllArgsConstructor;
+    import lombok.Builder;
+    import lombok.Getter;
+    import lombok.NoArgsConstructor;
+    import lombok.Setter;
 
-import java.math.BigDecimal;
-import java.util.List;
+    import java.math.BigDecimal;
+    import java.util.List;
 
 
-@Builder
-@Getter
-@Setter
-@Entity
-@Table(
-        name = "products",
-        indexes = {
-                @Index(name = "idx_product_admin_id", columnList = "admin_id"),
-                @Index(name = "idx_product_type", columnList = "type_of_product"),
-                @Index(name = "idx_product_company", columnList = "company")
-        }
-)
-@AllArgsConstructor
-@NoArgsConstructor
-public class Product {
+    @Builder
+    @Getter
+    @Setter
+    @Entity
+    @Table(
+            name = "products",
+            indexes = {
+                    @Index(name = "idx_product_admin_id", columnList = "admin_id"),
+                    @Index(name = "idx_product_type", columnList = "type_of_product"),
+                    @Index(name = "idx_product_company", columnList = "company")
+            }
+    )
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public class Product {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+        @Id
+        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        private Long id;
 
-    @Column(nullable = false, unique = true, length = 200)
-    private String name;
+        @Column(nullable = false, unique = true, length = 200)
+        private String name;
 
-    @Lob
-    @Column(nullable = false)
-    private String description;
+        @Lob
+        @Column(columnDefinition = "LONGTEXT",nullable = false)
 
-    @Column(nullable = false, precision = 10, scale = 2)
-    private BigDecimal price;
+        private String description;
 
-    @Column(precision = 10, scale = 2)
-    private BigDecimal largePrice;
+        @Column(nullable = false, precision = 10, scale = 2)
+        private BigDecimal price;
 
-    @Column(name = "type_of_product", length = 100)
-    private String typeOfProduct;
+        @Column(precision = 10, scale = 2)
+        private BigDecimal largePrice;
 
-    @Column(length = 120)
-    private String company;
+        @Column(name = "type_of_product", length = 100)
+        private String typeOfProduct;
 
-    // Admin who created product
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "admin_id")
-    private User admin;
+        @Column(length = 120)
+        private String company;
 
-    // Images
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<ProductImage> images;
+        // Admin who created product
+        @ManyToOne(fetch = FetchType.LAZY)
+        @JoinColumn(name = "admin_id")
+        private User admin;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Review> reviews;
+        // Images
+        @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+        private List<ProductImage> images;
 
-}
+        @JsonIgnore
+        @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
+        private List<Review> reviews;
+
+    }
