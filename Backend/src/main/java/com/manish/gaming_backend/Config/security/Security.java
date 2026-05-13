@@ -40,10 +40,10 @@ public class Security {
     }
 
 
-    public String generateToken(String email, String role, String mobile){
+    public String generateToken(String email, String role){
         Date now = new Date();
         Date expiry = new Date(now.getTime() + jwtExpiration);
-        String token = Jwts.builder().setSubject(email).addClaims(Map.of("role" , role,"mobile",mobile))
+        String token = Jwts.builder().setSubject(email).addClaims(Map.of("role" , role))
             .setIssuedAt(now)
             .setExpiration(expiry)
                 .signWith(secretKey)
@@ -52,7 +52,7 @@ public class Security {
         return token;
     }
 
-    public boolean validateToken(String token, String email,String mobile){
+    public boolean validateToken(String token, String email){
         try {
             String normalizedToken = normalizeToken(token);
             if (normalizedToken == null) {
@@ -60,8 +60,7 @@ public class Security {
             }
             Claims claims = extractClaims(normalizedToken);
             String tokenEmail = claims.getSubject();
-            String tokenMobile = claims.get("mobile",String.class);
-            return tokenEmail.equals(email)&&tokenMobile.equals(mobile);
+            return tokenEmail.equals(email);
         } catch (ExpiredJwtException e) {
             log.info("Token expired");
 
@@ -111,13 +110,6 @@ public class Security {
             return null;
         }
         return extractClaims(normalizedToken).get("role", String.class);
-    }
-    public String extractMobile(String token)  {
-        String normalizedToken = normalizeToken(token);
-        if (normalizedToken == null) {
-            return null;
-        }
-        return extractClaims(normalizedToken).get("mobile", String.class);
     }
 
     private Claims extractClaims(String token) {

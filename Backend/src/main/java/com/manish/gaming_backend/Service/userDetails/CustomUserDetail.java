@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 
+
 public class CustomUserDetail implements UserDetails {
 
     private final User user;
@@ -37,8 +38,8 @@ public class CustomUserDetail implements UserDetails {
         return user.getRole();
     }
 
-    public String getMobileNo(){
-        return user.getMobile();
+    public String getGoogleId(){
+        return user.getGoogleId();
     }
 
     public User getUser(){

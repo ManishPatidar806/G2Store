@@ -60,7 +60,6 @@ public class UserServiceImpl implements UserService {
             Payload payload = verifiedToken.getPayload();
             String email = payload.getEmail();
             String name = (String) payload.get("name");
-            String sub = payload.getSubject();
 
             boolean isNewUser = false;
             User user = userRepository.findByEmail(email).orElse(null);
@@ -69,14 +68,13 @@ public class UserServiceImpl implements UserService {
                 user = User.builder()
                         .name(name != null ? name : "Google User")
                         .email(email)
-                        .mobile("google_" + sub)
                         .password(passwordEncoder.encode(UUID.randomUUID().toString()))
                         .role(Role.USER)
                         .build();
                 user = userRepository.save(user);
             }
 
-            String token = security.generateToken(user.getEmail(), String.valueOf(user.getRole()), user.getMobile());
+                String token = security.generateToken(user.getEmail(), String.valueOf(user.getRole()));
             AuthPayload payloadResponse = AuthPayload.builder()
                     .isNewUser(isNewUser)
                     .role(String.valueOf(user.getRole()))
@@ -97,7 +95,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new UserNotFoundException("User with email " + email + " not found"));
         user.setRole(Role.valueOf(role));
         userRepository.save(user);
-        String token = security.generateToken(user.getEmail(), String.valueOf(user.getRole()), user.getMobile());
+        String token = security.generateToken(user.getEmail(), String.valueOf(user.getRole()));
         AuthPayload payloadResponse = AuthPayload.builder()
                 .isNewUser(false)
                 .role(String.valueOf(user.getRole()))
@@ -115,8 +113,7 @@ public class UserServiceImpl implements UserService {
         ProfileResponse profileResponse = ProfileResponse.builder()
                 .name(user.getName())
                 .role(String.valueOf(user.getRole()))
-                .email(user.getEmail())
-                .number(user.getMobile())
+            .email(user.getEmail())
                 .build();
         return ApiResponse.success("UserProfile Fetch Successfully", profileResponse);
     }

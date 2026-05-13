@@ -42,7 +42,7 @@ try {
 
     if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
         CustomUserDetail userDetails = (CustomUserDetail) customUserDetailService.loadUserByUsername(email);
-        if (security.validateToken(token, userDetails.getUsername(), userDetails.getMobileNo())) {
+        if (security.validateToken(token, userDetails.getUsername())) {
             UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails, userDetails.getPassword(), userDetails.getAuthorities());
             usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);

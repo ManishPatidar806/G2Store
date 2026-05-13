@@ -12,7 +12,5 @@ public class ProfileResponse {
     private String email;
     private String role;
 
-    private String number;
-
 
 }

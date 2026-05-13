@@ -16,7 +16,6 @@ import java.util.List;
         name = "users",
         indexes = {
                 @Index(name = "idx_user_email", columnList = "email"),
-                @Index(name = "idx_user_mobile", columnList = "mobile"),
                 @Index(name = "idx_user_role", columnList = "role")
         }
 )
