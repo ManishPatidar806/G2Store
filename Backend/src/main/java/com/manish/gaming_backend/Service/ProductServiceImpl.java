@@ -77,14 +77,14 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product getProductById(@NotNull @Positive Long productId) {
+    public Product getProductById(Long productId) {
         return productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found with ID: " + productId));
     }
 
     @Override
-    public ApiResponse<?> updateProduct(@NotBlank(message = "Product name is required") String productName,
-                                        @Valid UpdateProduct updateProduct) {
+    public ApiResponse<?> updateProduct(String productName,
+                                        UpdateProduct updateProduct) {
         Product existingProduct = productRepository.findProductByName(productName)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found with name: " + productName));
         
@@ -100,7 +100,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public ApiResponse<?> deleteProduct(@NotBlank(message = "Product name is required") String productName) {
+    public ApiResponse<?> deleteProduct(String productName) {
         Product product = productRepository.findProductByName(productName)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found with name: " + productName));
         

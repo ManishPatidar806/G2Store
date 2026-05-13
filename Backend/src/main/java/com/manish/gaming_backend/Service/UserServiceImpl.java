@@ -109,7 +109,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Cacheable(value = "users", key = "#email", unless = "#result == null")
-    public ApiResponse<ProfileResponse> getProfile(@NotBlank String email) {
+    public ApiResponse<ProfileResponse> getProfile(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException("Profile with this email " + email + " not found."));
         ProfileResponse profileResponse = ProfileResponse.builder()
