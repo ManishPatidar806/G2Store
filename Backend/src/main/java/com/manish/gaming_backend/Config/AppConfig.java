@@ -32,22 +32,6 @@ public class AppConfig {
         return factory;
     }
 
-    /**
-     * Configure async task executor for @Async methods
-     * Used for non-blocking operations like email sending, file uploads, etc.
-     */
-    @Bean(name = "taskExecutor")
-    public Executor taskExecutor() {
-        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(5);
-        executor.setMaxPoolSize(20);
-        executor.setQueueCapacity(100);
-        executor.setThreadNamePrefix("GamingBackend-Async-");
-        executor.setAwaitTerminationSeconds(60);
-        executor.setWaitForTasksToCompleteOnShutdown(true);
-        executor.initialize();
-        return executor;
-    }
 
     /**
      * Configure RestTemplate with connection pooling for external API calls
