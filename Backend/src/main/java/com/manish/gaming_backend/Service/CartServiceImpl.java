@@ -2,45 +2,52 @@ package com.manish.gaming_backend.Service;
 
 import com.manish.gaming_backend.Model.Cart;
 import com.manish.gaming_backend.Repository.CartRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
 
 @Service
+@Validated
 public class CartServiceImpl implements CartService {
 
-    @Autowired
-    private CartRepository cartRepository;
+    private final CartRepository cartRepository;
+
+    public CartServiceImpl(CartRepository cartRepository) {
+        this.cartRepository = cartRepository;
+    }
 
     @Override
     public Cart AddCart(Cart cart) {
         return cartRepository.save(cart);
     }
 
-    public List<Cart> showAllCart(Long userId){
+    public List<Cart> showAllCart(@NotNull Long userId){
 
-        return cartRepository.showAllCart(userId);
+        return cartRepository.findByUser_Id(userId);
     }
 
     @Override
-    public boolean deleteCart(String name,Long userId) {
+    public boolean deleteCart(@NotBlank String name,@NotNull Long userId) {
       try {
-          cartRepository.deleteCartByName(name, userId);
+          cartRepository.deleteByProduct_NameAndUser_Id(name, userId);
           return true;
       }catch (Exception e){
           return false;
       }
       }
-    public boolean isExistInCart(String name ,Long user_id){
-        return cartRepository.findCartByName(name , user_id) != null;
+    public boolean isExistInCart(@NotBlank String name ,@NotNull Long userId){
+        return cartRepository.findByUser_IdAndProduct_Name(userId, name) != null;
 
     }
 
     @Override
-    public boolean removeAllItemFromCart(long userId) {
+    public boolean removeAllItemFromCart(@NotNull Long userId) {
         try {
-            cartRepository.deleteAllById(userId);
+            cartRepository.deleteByUser_Id(userId);
             return true;
         }catch (Exception e){
             return false;

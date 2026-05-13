@@ -7,6 +7,7 @@ import com.manish.gaming_backend.Response.*;
 import com.manish.gaming_backend.Service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import jakarta.validation.Valid;
@@ -25,39 +26,28 @@ public class UserController {
     }
 
     @PostMapping("/google")
-    public ResponseEntity<ApiResponse> googleLogin(@Valid @RequestBody GoogleAuthRequest request) {
+    public ResponseEntity<ApiResponse<?>> googleLogin(@Valid @RequestBody GoogleAuthRequest request) {
         return new ResponseEntity<>(userService.googleLogin(request.getIdToken()), HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PatchMapping("/role")
-    public ResponseEntity<ApiResponse> updateRole(
+    public ResponseEntity<ApiResponse<?>> updateRole(
             @AuthenticationPrincipal UserDetails userDetails,
             @Valid @RequestBody RoleUpdateRequest request) {
         return new ResponseEntity<>(userService.updateRole(userDetails.getUsername(), request.getRole()), HttpStatus.OK);
     }
 
-
-    /*
-    * Show Profile
-    * */
     @GetMapping("/profile")
-    public ResponseEntity<ApiResponse> profile(@AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<ApiResponse<?>> profile(@AuthenticationPrincipal UserDetails userDetails) {
         return new ResponseEntity<>(userService.getProfile(userDetails.getUsername()),HttpStatus.OK);
     }
 
-
-/*
-*Delete Account
-* */
-
-    @GetMapping("/deleteAccount")
-    public ResponseEntity<ApiResponse> deleteAccount(@AuthenticationPrincipal UserDetails userDetails) {
-        return new ResponseEntity<>(userService.deleteAccount(userDetails.getUsername()),HttpStatus.NO_CONTENT);
+    @DeleteMapping("/deleteAccount")
+    public ResponseEntity<ApiResponse<?>> deleteAccount(@AuthenticationPrincipal UserDetails userDetails) {
+        return new ResponseEntity<>(userService.deleteAccount(userDetails.getUsername()),HttpStatus.OK);
     }
 
 
 
 }
-
-
-

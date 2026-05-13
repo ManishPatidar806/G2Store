@@ -13,5 +13,5 @@ public interface CartService  {
 
     public boolean isExistInCart(String name , Long userId);
 
-    public boolean removeAllItemFromCart(long userId);
+    public boolean removeAllItemFromCart(Long userId);
 }

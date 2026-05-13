@@ -9,22 +9,31 @@ import java.util.List;
 
 @Data
 @Entity
-@Table(name = "orders")
+@Table(
+        name = "orders",
+        indexes = {
+                @Index(name = "idx_order_user_id", columnList = "user_id"),
+                @Index(name = "idx_order_status", columnList = "status"),
+                @Index(name = "idx_order_date", columnList = "order_date")
+        }
+)
 public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "order_date", nullable = false)
     private LocalDateTime orderDate;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 30)
     private OrderStatus status; // PAYMENT_SUCCESS, PLACED, APPROVED, READY_TO_SHIP, SHIPPED, DELIVERED, CANCELED
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> items;
 }

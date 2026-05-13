@@ -1,7 +1,6 @@
 package com.manish.gaming_backend.Response;
 
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 
 @Builder

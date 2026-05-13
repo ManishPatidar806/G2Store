@@ -28,7 +28,8 @@ public class SecurityHeadersFilter extends OncePerRequestFilter {
         response.setHeader("Permissions-Policy", "geolocation=(), microphone=(), camera=()");
 
         // Performance headers
-        response.setHeader("Cache-Control", "public, max-age=3600");
+        response.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, max-age=0");
+        response.setHeader("Pragma", "no-cache");
         response.setHeader("Vary", "Accept-Encoding");
 
         filterChain.doFilter(request, response);

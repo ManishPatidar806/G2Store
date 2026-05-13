@@ -1,54 +1,125 @@
 # G2Store
 
-## Overview
+A full-stack gaming e-commerce platform with a React frontend and a Spring Boot backend.
 
-G2Store is a full-stack gaming e-commerce application built as a modern storefront for gaming products. It combines a React + Vite frontend with a Spring Boot backend to deliver product browsing, cart management, secure checkout, reviews, admin management, and user authentication.
+## Table of Contents
+
+1. [Project Highlights](#project-highlights)
+2. [Architecture](#architecture)
+3. [Tech Stack](#tech-stack)
+4. [Monorepo Structure](#monorepo-structure)
+5. [Prerequisites](#prerequisites)
+6. [Quick Start](#quick-start)
+7. [Environment Variables](#environment-variables)
+8. [Run Locally (Without Docker)](#run-locally-without-docker)
+9. [API Overview](#api-overview)
+10. [Security, Performance, and Operations](#security-performance-and-operations)
+11. [Build and Deploy](#build-and-deploy)
+12. [Troubleshooting](#troubleshooting)
+13. [Known Notes](#known-notes)
+14. [License](#license)
+
+## Project Highlights
+
+- Google OAuth-based authentication with JWT issuance.
+- Product catalog management with admin-protected actions.
+- Cart, order placement, and order status workflows.
+- Stripe checkout session creation and payment session retrieval.
+- Product review system with role-aware deletion rules.
+- Cloudinary integration for media handling.
+- Caffeine caching, Bucket4j rate limiting, and secure HTTP headers.
+- Dockerized backend, frontend, and MySQL services.
 
 ## Architecture
 
-- **Frontend:** React, Vite, Tailwind CSS, Axios, React Router
-- **Backend:** Spring Boot, Spring Security, Spring Data JPA, MySQL
-- **Payments:** Stripe
-- **Image storage:** Cloudinary
-- **Authentication:** JWT and Google OAuth support
-- **Caching:** Caffeine
-- **Rate limiting:** Bucket4j
+```text
+Frontend (React + Vite)  --->  Backend API (Spring Boot)  --->  MySQL
+             |                           |                            |
+             |                           |                            |
+             |                           +--> Stripe (payments)       |
+             |                           +--> Cloudinary (media)      |
+             |                           +--> Google OAuth verify     |
+```
 
-## Key Features
+## Tech Stack
 
-- User registration and login
-- Google OAuth sign-in support
-- Product listing, filtering, and detail views
-- Shopping cart and wishlist management
-- Stripe checkout and payment confirmation
-- Product reviews and ratings
-- Admin dashboard for product and order management
-- User profile and account deletion
-- Email support and application health monitoring
+### Frontend
 
-## Repository Structure
+- React 18
+- Vite 6
+- React Router
+- Axios
+- Tailwind CSS
+- ESLint
 
-- `Backend/` — Spring Boot API and service layer
-- `Frontend/` — React application and UI components
+### Backend
+
+- Java 21
+- Spring Boot 3.5
+- Spring Web, Security, Validation
+- Spring Data JPA + MySQL
+- JWT (jjwt)
+- Google ID Token verification
+- Stripe SDK
+- Cloudinary SDK
+- Caffeine cache
+- Bucket4j rate limiting
+- Spring Actuator
+
+### Infrastructure
+
+- Docker and Docker Compose
+- Nginx (frontend static serving + SPA fallback)
+
+## Monorepo Structure
+
+```text
+G2Store/
+   Backend/    # Spring Boot API
+   Frontend/   # React application
+   docker-compose.yml
+```
 
 ## Prerequisites
 
+- Docker + Docker Compose (recommended path), or:
 - Java 21
-- Maven 3.8+ (or use the included Maven wrapper `./mvnw`)
-- Node.js 18+ and npm
-- MySQL database
-- Cloudinary account for image uploads
-- Stripe account for payments
-- Gmail account for Spring Mail (optional for email features)
+- Maven 3.9+ (or use Maven Wrapper in Backend)
+- Node.js 20+ and npm
+- MySQL 8+
+- Cloudinary account
+- Stripe account
+- Google OAuth client
 
-## Backend Setup
+## Quick Start
 
-1. Open a terminal in `Backend/`
-2. Configure environment variables for your development environment.
+### Option A: Docker Compose (recommended)
 
-Required backend environment variables:
+1. Create a root `.env` file beside `docker-compose.yml`.
+2. Add the required variables from the [Environment Variables](#environment-variables) section.
+3. Run:
 
-- `DATABASE_URL`
+```bash
+docker compose up --build
+```
+
+4. Access services:
+
+- Frontend: `http://localhost:3000`
+- Backend: `http://localhost:8080`
+- MySQL: `localhost:3306`
+
+### Option B: Local Development
+
+Run MySQL first, then backend, then frontend. Detailed commands are in [Run Locally (Without Docker)](#run-locally-without-docker).
+
+## Environment Variables
+
+Set these variables either in shell, in a `.env` file used by Docker Compose, or in platform-specific secret management.
+
+### Backend Required
+
+- `DATABASE_URL` (example: `jdbc:mysql://localhost:3306/g2store?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC`)
 - `DATABASE_USERNAME`
 - `DATABASE_PASSWORD`
 - `CLOUDINARY_NAME`
@@ -58,85 +129,156 @@ Required backend environment variables:
 - `MAIL_PASSWORD`
 - `PAYMENT_SECRET_KEY`
 - `GOOGLE_CLIENT_ID`
-- `FRONTEND_URL`
+- `FRONTEND_URL` (example: `http://localhost:3000`)
+- `JWT_SECRET` (must be at least 64 chars for HS512)
 
-Example `application.properties` values are already configured to use these variables.
+### Backend Optional
 
-### Run backend locally
+- `JWT_EXPIRATION_MS` (default: `86400000`)
+- `security.public-urls` (default: `/v1/auth/google`)
+
+### Frontend Required
+
+- `VITE_APP_API_URL` (example: `http://localhost:8080`)
+- `VITE_GOOGLE_CLIENT_ID`
+
+### Docker Compose MySQL Defaults
+
+- `MYSQL_ROOT_PASSWORD` (default: `root`)
+- `MYSQL_DATABASE` (default: `g2store`)
+- `MYSQL_USER` (default: `g2store`)
+- `MYSQL_PASSWORD` (default: `g2store`)
+
+## Run Locally (Without Docker)
+
+### 1) Start MySQL
+
+Ensure the database exists and credentials match your backend environment.
+
+### 2) Start Backend
 
 ```bash
 cd Backend
+chmod +x mvnw
 ./mvnw spring-boot:run
 ```
 
-Alternatively:
+Backend default URL: `http://localhost:8080`
 
-```bash
-cd Backend
-mvn spring-boot:run
-```
-
-### Build backend jar
-
-```bash
-cd Backend
-./mvnw clean package
-```
-
-## Frontend Setup
-
-1. Open a terminal in `Frontend/`
-2. Create a `.env` file or set the variables in your shell.
-
-Required frontend environment variables:
-
-- `VITE_APP_API_URL` — backend API base URL, e.g. `http://localhost:8080`
-- `VITE_GOOGLE_CLIENT_ID` — Google OAuth client ID
-
-### Install dependencies
+### 3) Start Frontend
 
 ```bash
 cd Frontend
 npm install
-```
-
-### Run frontend locally
-
-```bash
 npm run dev
 ```
 
-### Build frontend for production
+Frontend dev URL: `http://localhost:5173`
+
+## API Overview
+
+Base URL: `http://localhost:8080`
+
+All routes are protected by JWT unless explicitly public.
+Current default public URL is only `POST /v1/auth/google`.
+
+### Auth and User
+
+- `POST /v1/auth/google` - Authenticate via Google ID token.
+- `PATCH /v1/auth/role` - Update role (admin only).
+- `GET /v1/auth/profile` - Get current profile.
+- `DELETE /v1/auth/deleteAccount` - Delete current account.
+
+### Products
+
+- `POST /v1/product/createproduct` - Create product with multipart payload (admin only).
+- `PATCH /v1/product/updateProduct` - Update product (admin only).
+- `DELETE /v1/product/removeProduct?name=...` - Remove product (admin only).
+- `GET /v1/product/getAllProducts` - Admin product listing.
+- `GET /v1/product/allProducts` - Public product listing.
+
+### Cart
+
+- `POST /v1/cartItem/addToCart`
+- `DELETE /v1/cartItem/removeFromCart?productName=...`
+- `GET /v1/cartItem/allCartItem`
+- `DELETE /v1/cartItem/removeAllCart`
+
+### Orders
+
+- `GET /v1/order/getOrderList`
+- `POST /v1/order/addOrderList`
+- `GET /v1/order/admin/list` (admin)
+- `PATCH /v1/order/admin/status?orderId=...&status=...` (admin)
+
+### Payments
+
+- `POST /v1/payment/v2/stripe`
+- `GET /v1/payment/detail/session?sessionId=...`
+
+### Reviews
+
+- `POST /v1/review/addReview?productId=...`
+- `PUT /v1/review/updateReview?productId=...`
+- `DELETE /v1/review/deleteReview?reviewId=...`
+- `GET /v1/review/findReview?productId=...`
+
+## Security, Performance, and Operations
+
+- Stateless JWT security filter chain.
+- Role-based authorization with `@PreAuthorize`.
+- CORS configured from `app.cors.allowed-origins`.
+- Rate limiting: 100 requests/minute per client (except selected public paths).
+- Security headers enabled via custom filter.
+- Caffeine caches for product, user, review, order, and related reads.
+- Async task executor configured for background operations.
+- Backend graceful shutdown enabled.
+
+## Build and Deploy
+
+### Backend Build
 
 ```bash
+cd Backend
+./mvnw clean package -DskipTests
+```
+
+Output jar: `Backend/target/*.jar`
+
+### Frontend Build
+
+```bash
+cd Frontend
 npm run build
 ```
 
-## Recommended Startup Order
+Output folder: `Frontend/dist`
 
-1. Start the backend API:
-   - `cd Backend && ./mvnw spring-boot:run`
-2. Start the frontend app:
-   - `cd Frontend && npm install && npm run dev`
+### Production Docker Deploy
 
-## Useful Endpoints
+```bash
+docker compose up -d --build
+```
 
-The frontend communicates with the backend API using routes such as:
+## Troubleshooting
 
-- `/v1/auth/*` — authentication, profile, account actions
-- `/v1/product/*` — product listing, upload, update, delete
-- `/v1/cartItem/*` — cart and wishlist operations
-- `/v1/order/*` — order creation and order history
-- `/v1/payment/*` — Stripe checkout and session details
-- `/v1/review/*` — add, delete, and fetch product reviews
-- `/v1/order/admin/*` — admin order management
+- `JWT secret must be at least 64 characters`:
+   Set a longer `JWT_SECRET`.
+- CORS errors in browser:
+   Ensure `FRONTEND_URL` matches the actual frontend origin.
+- Stripe session creation fails:
+   Verify `PAYMENT_SECRET_KEY` and request payload format.
+- Google auth fails:
+   Confirm `GOOGLE_CLIENT_ID` in both frontend and backend match the same OAuth app.
+- Backend fails on startup with schema validation errors:
+   `spring.jpa.hibernate.ddl-auto=validate` requires an existing schema. Create/import DB schema before running.
 
-## Notes
+## Known Notes
 
-- The backend is configured with Spring Security and JWT for protected routes.
-- Caching is enabled with Caffeine for frequently accessed resources.
-- The application uses Cloudinary for product image management and Stripe for payments.
+- Route naming is case- and spelling-sensitive; keep frontend and backend endpoint names aligned.
+- Some frontend calls may still reference legacy route names (for example `uploadProduct` or `removeToCart`). Backend currently exposes `createproduct` and `removeFromCart`.
+- There is no license file in this repository yet.
 
 ## License
 
-This repository does not include a license file. Add a license if you want to open source the project.
+No license is currently declared.

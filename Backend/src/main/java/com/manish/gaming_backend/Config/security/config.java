@@ -1,5 +1,6 @@
 package com.manish.gaming_backend.Config.security;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -11,6 +12,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 
 @Configuration
 @EnableWebSecurity
@@ -19,9 +21,8 @@ public class config {
 
     private final JwtCustomFilter jwtCustomFilter;
 
-    public final String[] PUBLIC_URLS ={
-            "/v1/auth/google"
-    };
+    @Value("${security.public-urls:/v1/auth/google}")
+    private String[] publicUrls;
 
     public config(JwtCustomFilter jwtCustomFilter) {
         this.jwtCustomFilter = jwtCustomFilter;
@@ -46,10 +47,14 @@ public class config {
                           response.getWriter().write("{\"error\":\"Unauthorized\"}");
                       })
               ))
+              .headers(headers -> headers
+                      .frameOptions(HeadersConfigurer.FrameOptionsConfig::deny)
+                      .xssProtection(HeadersConfigurer.XXssConfig::disable)
+                      .contentTypeOptions(HeadersConfigurer.ContentTypeOptionsConfig::disable))
 
                   .authorizeHttpRequests(
                     auth->auth
-                        .requestMatchers(PUBLIC_URLS).permitAll()
+                        .requestMatchers(publicUrls).permitAll()
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtCustomFilter, UsernamePasswordAuthenticationFilter.class)
         .build();

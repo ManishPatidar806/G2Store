@@ -2,7 +2,6 @@ package com.manish.gaming_backend.Config;
 
 import io.github.bucket4j.Bandwidth;
 import io.github.bucket4j.Bucket;
-import io.github.bucket4j.Bucket4j;
 import io.github.bucket4j.Refill;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -45,13 +44,14 @@ public class RateLimitingFilter extends OncePerRequestFilter {
         if (bucket.tryConsume(1)) {
             // Token consumed successfully
             response.addHeader(RATE_LIMIT_LIMIT_HEADER, "100");
-            response.addHeader(RATE_LIMIT_HEADER, String.valueOf(bucket.estimateAbilityToConsume(1).getRoundedTokensToConsume()));
+            long remainingTokens = bucket.estimateAbilityToConsume(1).getRemainingTokens();
+            response.addHeader(RATE_LIMIT_HEADER, String.valueOf(remainingTokens));
             response.addHeader(RATE_LIMIT_RESET_HEADER, String.valueOf(System.currentTimeMillis() + 60000));
             filterChain.doFilter(request, response);
         } else {
             // Rate limit exceeded
             log.warn("Rate limit exceeded for client: {}", clientId);
-            response.setStatus(HttpServletResponse.SC_TOO_MANY_REQUESTS);
+            response.setStatus(429);
             response.addHeader("X-Rate-Limit-Retry-After-Seconds", "60");
             response.getWriter().write("{\"message\": \"Rate limit exceeded. Please try again later.\"}");
             response.setContentType("application/json");
@@ -64,7 +64,7 @@ public class RateLimitingFilter extends OncePerRequestFilter {
      */
     private Bucket createNewBucket() {
         Bandwidth limit = Bandwidth.classic(100, Refill.intervally(100, Duration.ofMinutes(1)));
-        return Bucket4j.builder()
+        return Bucket.builder()
                 .addLimit(limit)
                 .build();
     }

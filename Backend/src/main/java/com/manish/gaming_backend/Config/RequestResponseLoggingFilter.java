@@ -11,7 +11,6 @@ import org.springframework.web.util.ContentCachingRequestWrapper;
 import org.springframework.web.util.ContentCachingResponseWrapper;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.Enumeration;
 
 @Slf4j
@@ -42,7 +41,7 @@ public class RequestResponseLoggingFilter extends OncePerRequestFilter {
             logResponse(responseWrapper, duration);
             
             // Copy response data back to original response
-            responseWrapper.copyToResponse();
+            responseWrapper.copyBodyToResponse();
         }
     }
 
@@ -73,11 +72,7 @@ public class RequestResponseLoggingFilter extends OncePerRequestFilter {
         
         // Log body for POST/PUT/PATCH
         if ("POST".equals(method) || "PUT".equals(method) || "PATCH".equals(method)) {
-            byte[] content = request.getContentAsByteArray();
-            if (content.length > 0) {
-                String body = new String(content, StandardCharsets.UTF_8);
-                sb.append("Body: ").append(body).append("\n");
-            }
+            sb.append("Body: [skipped] \n");
         }
         
         sb.append("Client IP: ").append(getClientIP(request)).append("\n");
@@ -103,8 +98,7 @@ public class RequestResponseLoggingFilter extends OncePerRequestFilter {
         // Log body
         byte[] content = response.getContentAsByteArray();
         if (content.length > 0 && isJsonResponse(response)) {
-            String body = new String(content, StandardCharsets.UTF_8);
-            sb.append("Body: ").append(body).append("\n");
+            sb.append("Body: [skipped]\n");
         }
         
         if (status >= 400) {

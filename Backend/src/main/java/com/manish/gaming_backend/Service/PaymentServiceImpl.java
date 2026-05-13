@@ -5,6 +5,7 @@ import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.checkout.Session;
 import com.stripe.param.checkout.SessionCreateParams;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -15,13 +16,20 @@ import java.util.List;
 public class PaymentServiceImpl implements PaymentService{
 
     @Value("${Stripe.secret.key}")
-    private String secreatKey;
+    private String secretKey;
 
     @Value("${Frontend.URl}")
     private String frontEndUrl;
 
+    @PostConstruct
+    public void initStripe() {
+        Stripe.apiKey = secretKey;
+    }
+
     public Session payment(PaymentRequest paymentRequest) throws StripeException {
-        Stripe.apiKey = secreatKey;
+        if (paymentRequest == null || paymentRequest.getProductPaymentRequestList() == null || paymentRequest.getProductPaymentRequestList().isEmpty()) {
+            throw new IllegalArgumentException("Payment request is empty");
+        }
 
         List<SessionCreateParams.LineItem> lineItems = new ArrayList<>();
         for (PaymentRequest.ProductPaymentRequest product : paymentRequest.getProductPaymentRequestList()) {

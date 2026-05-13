@@ -23,7 +23,7 @@ public class Security {
 
 
 
-    @Value("${jwt.secret:manishpatidarmanishpatidarimaidhfaohfaishdfahsdfhsdfhsdjsdfhkjasdhflkjshfdlakjshdflkjhdsalkfjhdlskjfhaldskjfhl}")
+    @Value("${jwt.secret}")
     private String secretKeyString;
 
     @Value("${jwt.expiration:86400000}")
@@ -49,7 +49,6 @@ public class Security {
                 .signWith(secretKey)
                 .compact();
 
-        log.info("GENERATED TOKEN IS :{}", token);
         return token;
     }
 

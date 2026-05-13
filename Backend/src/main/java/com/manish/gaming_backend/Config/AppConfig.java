@@ -18,18 +18,17 @@ public class AppConfig {
     @Bean
     public ServletWebServerFactory servletWebServerFactory() {
         TomcatServletWebServerFactory factory = new TomcatServletWebServerFactory();
-        
+
         // Enable gzip compression
-        factory.setCompressionMinResponseSize(1024);
         factory.addConnectorCustomizers(connector -> {
-            connector.setAttribute("compression", "on");
-            connector.setAttribute("compressionMinSize", "1024");
-            connector.setAttribute("compressableMimeType", 
+            connector.setProperty("compression", "on");
+            connector.setProperty("compressionMinSize", "1024");
+            connector.setProperty("compressableMimeType",
                 "text/html,text/xml,text/plain,text/css,application/javascript,application/json");
-            connector.setAttribute("maxThreads", 200);
-            connector.setAttribute("minSpareThreads", 10);
+            connector.setProperty("maxThreads", "200");
+            connector.setProperty("minSpareThreads", "10");
         });
-        
+
         return factory;
     }
 

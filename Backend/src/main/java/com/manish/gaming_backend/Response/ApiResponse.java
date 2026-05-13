@@ -2,7 +2,6 @@ package com.manish.gaming_backend.Response;
 
 import lombok.Builder;
 import lombok.Data;
-import org.springframework.http.HttpStatusCode;
 
 import java.time.LocalDateTime;
 
@@ -10,13 +9,61 @@ import java.time.LocalDateTime;
 @Builder
 public class ApiResponse<T> {
 
-private String token;
-private String message;
-private boolean success;
-private ErrorDetails error;
-private T data;
+    private String token;
+    private String message;
+    private boolean success;
+    private ErrorDetails error;
+    private T data;
     @Builder.Default
     private LocalDateTime timestamp = LocalDateTime.now();
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public boolean isSuccess() {
+        return success;
+    }
+
+    public void setSuccess(boolean success) {
+        this.success = success;
+    }
+
+    public ErrorDetails getError() {
+        return error;
+    }
+
+    public void setError(ErrorDetails error) {
+        this.error = error;
+    }
+
+    public T getData() {
+        return data;
+    }
+
+    public void setData(T data) {
+        this.data = data;
+    }
+
+    public LocalDateTime getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(LocalDateTime timestamp) {
+        this.timestamp = timestamp;
+    }
 
     /**
      * Creates a successful response with data

@@ -12,19 +12,22 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.client.json.gson.GsonFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.validation.annotation.Validated;
 
+import jakarta.validation.constraints.NotBlank;
 import java.util.Collections;
 import java.util.UUID;
 
 @Slf4j
 @Service
+@Validated
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
@@ -45,13 +48,13 @@ public class UserServiceImpl implements UserService {
     public void initGoogleVerifier() {
         this.googleIdTokenVerifier = new GoogleIdTokenVerifier.Builder(
                 new NetHttpTransport(),
-                JacksonFactory.getDefaultInstance()
+                GsonFactory.getDefaultInstance()
         ).setAudience(Collections.singletonList(googleClientId)).build();
     }
 
 
     @Override
-    public ApiResponse googleLogin(String idToken) {
+    public ApiResponse<AuthPayload> googleLogin(@NotBlank String idToken) {
         try {
             GoogleIdToken verifiedToken = googleIdTokenVerifier.verify(idToken);
             if (verifiedToken == null) {
@@ -92,7 +95,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @CacheEvict(value = "users", key = "#email")
-    public ApiResponse updateRole(String email, String role) {
+    public ApiResponse<AuthPayload> updateRole(@NotBlank String email, @NotBlank String role) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException("User with email " + email + " not found"));
         user.setRole(Role.valueOf(role));
@@ -109,7 +112,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Cacheable(value = "users", key = "#email", unless = "#result == null")
-    public ApiResponse getProfile(String email) {
+    public ApiResponse<ProfileResponse> getProfile(@NotBlank String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserNotFoundException("Profile with this email " + email + " not found."));
         ProfileResponse profileResponse = ProfileResponse.builder()
@@ -123,11 +126,25 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @CacheEvict(value = "users", key = "#email")
-    public ApiResponse deleteAccount(String email) {
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UserNotFoundException("Account with this email " + email + " not found"));
+    public ApiResponse<Void> deleteAccount(@NotBlank String email) {
+        userRepository.findByEmail(email)
+            .orElseThrow(() -> new UserNotFoundException("Account with this email " + email + " not found"));
         userRepository.deleteByEmail(email);
-        return ApiResponse.success("Account Deleted Successfully");
+        return ApiResponse.<Void>success("Account Deleted Successfully");
+    }
+
+    @Override
+    public User findUserByEmail(String email) {
+        return userRepository.findByEmail(email).orElse(null);
+    }
+
+    @Override
+    public User findAdminByEmail(String email) {
+        User user = userRepository.findByEmail(email).orElse(null);
+        if (user == null || user.getRole() != Role.ADMIN) {
+            return null;
+        }
+        return user;
     }
 
 }

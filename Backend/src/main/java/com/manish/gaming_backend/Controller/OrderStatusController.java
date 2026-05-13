@@ -1,18 +1,17 @@
 package com.manish.gaming_backend.Controller;
 
-import com.manish.gaming_backend.Config.security.Security;
+import com.manish.gaming_backend.Exception.ValidationException;
 import com.manish.gaming_backend.Model.OrderStatus;
-import com.manish.gaming_backend.Model.User;
 import com.manish.gaming_backend.Request.OrderRequest;
-import com.manish.gaming_backend.Response.CommonObjectResponse;
-import com.manish.gaming_backend.Response.CommonResponse;
-import com.manish.gaming_backend.Service.UserService;
+import com.manish.gaming_backend.Response.ApiResponse;
+import com.manish.gaming_backend.Response.OrderResponseDTO;
 import com.manish.gaming_backend.Service.OrderStatusService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.manish.gaming_backend.Service.userDetails.CustomUserDetail;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import jakarta.validation.Valid;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,134 +20,89 @@ import java.util.List;
 @RequestMapping("/v1/order")
 public class OrderStatusController {
 
-    @Autowired
-    private Security security;
+    private final OrderStatusService orderStatusService;
 
-    @Autowired
-    private OrderStatusService orderStatusService;
+    public OrderStatusController(OrderStatusService orderStatusService) {
+        this.orderStatusService = orderStatusService;
+    }
 
-    @Autowired
-    private UserService userService;
-
+    @PreAuthorize("hasRole('USER')")
     @GetMapping("/getOrderList")
-    public ResponseEntity<CommonObjectResponse> findAllOrder(@RequestHeader("Authorization") String token){
-        CommonObjectResponse response = new CommonObjectResponse();
-        try {
-            if (!security.validateToken(token)) {
-                throw new Exception("UnAuthorized Access");
-            }
-
-            String role = security.extractRole(token);
-            if (role.equalsIgnoreCase("ADMIN")) {
-                throw new Exception("Invalid Access");
-            }
-            String email = security.extractEmail(token);
-            if (email.isEmpty()) {
-                throw new Exception("User is not found");
-            }
-            User user = userService.findUserByEmail(email);
-            List<OrderStatus> orderStatusList = orderStatusService.findAllOrder(user);
-            response.setObj(orderStatusList);
-            response.setMessage("Order Found  Successfully");
-            response.setStatus(true);
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (Exception e) {
-            response.setMessage(e.getMessage());
-            response.setStatus(false);
-            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ResponseEntity<ApiResponse<?>> getUserOrders(@AuthenticationPrincipal CustomUserDetail userDetails) {
+        
+        List<OrderStatus> orderStatusList = orderStatusService.findAllOrder(userDetails.getUser());
+        List<OrderResponseDTO> orderResponseDTOS = orderStatusList.stream()
+            .map(this::convertToDTO)
+            .toList();
+        
+        return new ResponseEntity<>(
+            ApiResponse.success("Orders retrieved successfully", orderResponseDTOS),
+                HttpStatus.OK
+        );
     }
 
+    @PreAuthorize("hasRole('USER')")
     @PostMapping("/addOrderList")
-    public ResponseEntity<CommonResponse> findAllOrder(@RequestHeader("Authorization") String token , @Valid @RequestBody List<OrderRequest> orderRequest){
-        CommonResponse response = new CommonResponse();
-        try {
-            if (!security.validateToken(token)) {
-                throw new Exception("UnAuthorized Access");
-            }
-            String role =security.extractRole(token);
-            if(role.equals("ADMIN")){
-                throw new Exception("Invalid Access");
-            }
-            String email =  security.extractEmail(token);
-            if(email.isEmpty()){
-                throw new Exception("User is not found");
-            }
-            User user = userService.findUserByEmail(email);
-            if(user==null){
-                throw new Exception("User not found");
-            }
+    public ResponseEntity<ApiResponse<?>> createOrders(
+            @AuthenticationPrincipal CustomUserDetail userDetails,
+            @Valid @RequestBody List<OrderRequest> orderRequest) {
+        orderStatusService.saveOrderList(orderRequest, userDetails.getUser());
 
-            if(!orderStatusService.saveOrderList(orderRequest,user)){
-                throw new Exception("Order uploaded Failed");
-            }
-            response.setMessage("Order uploaded  Successfully");
-            response.setStatus(true);
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (Exception e) {
-            response.setMessage(e.getMessage());
-            response.setStatus(false);
-            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        return new ResponseEntity<>(
+                ApiResponse.success("Orders created successfully"),
+                HttpStatus.CREATED
+        );
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/admin/list")
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<CommonObjectResponse> findAllOrdersForAdmin(@RequestHeader("Authorization") String token) {
-        CommonObjectResponse response = new CommonObjectResponse();
-        try {
-            if (!security.validateToken(token)) {
-                throw new Exception("UnAuthorized Access");
-            }
-            String role = security.extractRole(token);
-            if (!role.equalsIgnoreCase("ADMIN")) {
-                throw new Exception("Invalid Access");
-            }
-
-            List<OrderStatus> orders = orderStatusService.findAllOrders();
-            response.setObj(orders);
-            response.setMessage("Orders fetched successfully");
-            response.setStatus(true);
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (Exception e) {
-            response.setMessage(e.getMessage());
-            response.setStatus(false);
-            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+    public ResponseEntity<ApiResponse<?>> getAllOrdersForAdmin() {
+        
+        List<OrderStatus> orders = orderStatusService.findAllOrders();
+        List<OrderResponseDTO> orderResponseDTOS = orders.stream()
+            .map(this::convertToDTO)
+            .toList();
+        
+        return new ResponseEntity<>(
+            ApiResponse.success("All orders retrieved successfully", orderResponseDTOS),
+                HttpStatus.OK
+        );
     }
 
-    @PatchMapping("/admin/status")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<CommonObjectResponse> updateOrderStatus(
-            @RequestHeader("Authorization") String token,
+    @PatchMapping("/admin/status")
+    public ResponseEntity<ApiResponse<?>> updateOrderStatus(
             @RequestParam Long orderId,
             @RequestParam String status) {
-        CommonObjectResponse response = new CommonObjectResponse();
-        try {
-            if (!security.validateToken(token)) {
-                throw new Exception("UnAuthorized Access");
-            }
-            String role = security.extractRole(token);
-            if (!role.equalsIgnoreCase("ADMIN")) {
-                throw new Exception("Invalid Access");
-            }
-
-                com.manish.gaming_backend.Utils.OrderStatus parsedStatus =
-                    com.manish.gaming_backend.Utils.OrderStatus.valueOf(status.toUpperCase());
-                OrderStatus updated = orderStatusService.updateOrderStatus(orderId, parsedStatus);
-            if (updated == null) {
-                throw new Exception("Order not found");
-            }
-
-            response.setObj(updated);
-            response.setMessage("Order status updated successfully");
-            response.setStatus(true);
-            return new ResponseEntity<>(response, HttpStatus.OK);
-        } catch (Exception e) {
-            response.setMessage(e.getMessage());
-            response.setStatus(false);
-            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        if (status == null || status.isBlank()) {
+            throw new ValidationException("Status is required");
         }
+
+        com.manish.gaming_backend.Utils.OrderStatus parsedStatus;
+        try {
+            parsedStatus = com.manish.gaming_backend.Utils.OrderStatus.valueOf(status.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new ValidationException("Invalid order status: " + status);
+        }
+
+        OrderStatus updated = orderStatusService.updateOrderStatus(orderId, parsedStatus);
+
+        return new ResponseEntity<>(
+                ApiResponse.success("Order status updated successfully", convertToDTO(updated)),
+                HttpStatus.OK
+        );
     }
 
+    private OrderResponseDTO convertToDTO(OrderStatus orderStatus) {
+        return OrderResponseDTO.builder()
+                .orderId(orderStatus.getId())
+                .productId(orderStatus.getProductId())
+                .productName(orderStatus.getName())
+                .quantity(1)
+                .totalAmount(orderStatus.getPrice() != null ? orderStatus.getPrice().doubleValue() : null)
+                .orderStatus(orderStatus.getStatus() != null ? orderStatus.getStatus().name() : null)
+                .createdAt(orderStatus.getDate() != null ? orderStatus.getDate().atStartOfDay() : null)
+                .build();
+    }
 }
+

@@ -1,10 +1,12 @@
 package com.manish.gaming_backend.Request;
+
 import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import org.springframework.web.multipart.MultipartFile;
+
+import java.math.BigDecimal;
+
 @Data
 public class CreateProductRequest {
 
@@ -16,7 +18,7 @@ public class CreateProductRequest {
 
     @NotNull(message = "Price is required")
     @DecimalMin(value = "0.0", inclusive = false, message = "Price must be positive")
-    private Double price;
+    private BigDecimal price;
 
     @NotBlank(message = "Type of product is required")
     private String typeOfProduct;
@@ -26,7 +28,7 @@ public class CreateProductRequest {
 
     @NotNull(message = "Large price is required")
     @DecimalMin(value = "0.0", inclusive = false)
-    private Double largePrice;
+    private BigDecimal largePrice;
 
     // System Requirements
     @NotBlank(message = "Processor is required")
